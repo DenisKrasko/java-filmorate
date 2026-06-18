@@ -85,7 +85,7 @@ public class UserController {
 		if (user.getEmail() == null || user.getEmail().isBlank()) {
 			logAndThrow("Имейл должен быть указан");
 		}
-		if (user.getEmail().charAt(0) != '@') {
+		if (!user.getEmail().contains("@")) {
 			logAndThrow("электронная почта должна содержать символ @");
 		}
 		if (user.getLogin() == null || user.getLogin().isBlank()) {
