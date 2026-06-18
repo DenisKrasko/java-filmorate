@@ -44,3 +44,4 @@ build/
 
 *.db
 db/*
+/src/main/java/ru/yandex/practicum/filmorate/model/User.java
