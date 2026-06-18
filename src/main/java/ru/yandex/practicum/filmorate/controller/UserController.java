@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
-import ru.yandex.practicum.filmorate.exception.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -43,13 +42,6 @@ public class UserController {
 			logAndThrow("Id должен быть указан");
 		}
 		if (users.containsKey(newUser.getId())) {
-			if (!users.get(newUser.getId()).getEmail().equals(newUser.getEmail())) {
-				for (User user1 : users.values()) {
-					if (user1.getEmail().equals(newUser.getEmail())) {
-						throw new DuplicatedDataException("Этот имейл уже используется");
-					}
-				}
-			}
 			User oldUser = users.get(newUser.getId());
 			log.trace("пользователь найден и все условия соблюдены, обновляем его содержимое");
 			oldUser.setLogin(newUser.getLogin());
@@ -97,13 +89,6 @@ public class UserController {
 		if (user.getBirthday().isAfter(LocalDate.now())){
 			logAndThrow("дата рождения не может быть в будущем");
 		}
-//		for (User user1 : users.values()) {
-//			if (user1.getEmail().equals(user.getEmail())) {
-//				String msg = "такой электронный адрес уже есть в базе";
-//				log.error(msg);
-//				throw new DuplicatedDataException(msg);
-//			}
-//		}
 		if (user.getName() == null || user.getName().isBlank()) {
 			user.setName(user.getLogin());
 		}
