@@ -56,7 +56,9 @@ public class FilmController {
 		throw new NotFoundException("Фильм с id = " + newFilm.getId() + " не найден");
 	}
 
-	/** Вспомогательный метод для генерации идентификатора нового поста */
+	/**
+	 * Вспомогательный метод для генерации идентификатора нового поста
+	 */
 	private long getNextId() {
 		long currentMaxId = films.keySet()
 				.stream()
@@ -78,7 +80,7 @@ public class FilmController {
 		if (film.getDescription().length() > 200) {
 			logAndThrow("Максимальная длина описания — 200 символов");
 		}
-		if (film.getReleaseDate().isBefore(LocalDate.of(1895,12, 28))) {
+		if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
 			logAndThrow("дата релиза должна быть не раньше 28 декабря 1895 года");
 		}
 		if (film.getDuration() <= 0) {

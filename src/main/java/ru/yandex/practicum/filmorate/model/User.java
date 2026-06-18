@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 public class User {
 	@EqualsAndHashCode.Exclude
 	private Long id;
+	@Email
 	private String email;
 	private String login;
 	private String name;

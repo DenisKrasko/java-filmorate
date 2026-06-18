@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,14 +27,14 @@ public class UserController {
 	}
 
 	@PostMapping
-	public User create(@RequestBody User user) {
+	public User create(@Valid @RequestBody User user) {
 		log.trace("проверка выполнения необходимых условий при эндпоинте Post");
 		validateUser(user);
 		log.trace("формирование дополнительных данных");
 		user.setId(getNextId());
 		log.trace("сохранение нового пользователя в памяти приложения");
 		users.put(user.getId(), user);
-		return user;
+		return users.get(user.getId());
 	}
 
 	@PutMapping
@@ -60,7 +61,9 @@ public class UserController {
 		throw new NotFoundException("User с id = " + newUser.getId() + " не найден");
 	}
 
-	/** Вспомогательный метод для генерации идентификатора нового поста */
+	/**
+	 * Вспомогательный метод для генерации идентификатора нового поста
+	 */
 	private long getNextId() {
 		long currentMaxId = users.keySet()
 				.stream()
@@ -88,7 +91,7 @@ public class UserController {
 		if (user.getLogin().contains(" ")) {
 			logAndThrow("логин не может содержать пробелы");
 		}
-		if (user.getBirthday().isAfter(LocalDate.now())){
+		if (user.getBirthday().isAfter(LocalDate.now())) {
 			logAndThrow("дата рождения не может быть в будущем");
 		}
 		if (user.getName() == null || user.getName().isBlank()) {

@@ -170,5 +170,4 @@ class FilmorateApplicationTests {
 		userController.create(user);
 		assertEquals(userExp, userController.getUsers().get((long) 1), "Error");
 	}
-
 }
