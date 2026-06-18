@@ -22,6 +22,17 @@ public class FilmController {
 		return films.values();
 	}
 
+	@PostMapping
+	public Film create(@RequestBody Film film) {
+		log.trace("проверяем выполнение необходимых условий");
+		validateFilm(film);
+		log.trace("формируем дополнительные данные");
+		film.setId(getNextId());
+		log.trace("сохраняем новый фильм в памяти приложения");
+		films.put(film.getId(), film);
+		return film;
+	}
+
 	@PutMapping
 	public Film update(@RequestBody Film newFilm) {
 		log.trace("проверяем необходимые условия");
@@ -41,17 +52,6 @@ public class FilmController {
 		}
 		log.error("Фильм с id = {} не найден", newFilm.getId());
 		throw new NotFoundException("Фильм с id = " + newFilm.getId() + " не найден");
-	}
-
-	@PostMapping
-	public Film create(@RequestBody Film film) {
-		log.trace("проверяем выполнение необходимых условий");
-		validateFilm(film);
-		log.trace("формируем дополнительные данные");
-		film.setId(getNextId());
-		log.trace("сохраняем новый фильм в памяти приложения");
-		films.put(film.getId(), film);
-		return film;
 	}
 
 	/** Вспомогательный метод для генерации идентификатора нового поста */
