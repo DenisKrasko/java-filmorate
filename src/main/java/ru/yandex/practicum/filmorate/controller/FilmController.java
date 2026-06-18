@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
+	@Getter
 	private final Map<Long, Film> films = new HashMap<>();
 	private final static Logger log = LoggerFactory.getLogger(FilmController.class);
 
@@ -42,7 +44,7 @@ public class FilmController {
 		}
 		if (films.containsKey(newFilm.getId())) {
 			Film oldFilm = films.get(newFilm.getId());
-			log.trace("публикация найдена и все условия соблюдены, обновляем её содержимое");
+			log.trace("фильм найден и все условия соблюдены, обновляем содержимое");
 			oldFilm.setDescription(newFilm.getDescription());
 			oldFilm.setName(newFilm.getName());
 			oldFilm.setDuration(newFilm.getDuration());
