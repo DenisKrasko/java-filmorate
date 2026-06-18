@@ -30,7 +30,7 @@ public class UserController {
 		validateUser(user);
 		log.trace("формирование дополнительных данных");
 		user.setId(getNextId());
-		log.trace("сохранение новой публикации в памяти приложения");
+		log.trace("сохранение нового пользователя в памяти приложения");
 		users.put(user.getId(), user);
 		return user;
 	}
@@ -97,14 +97,14 @@ public class UserController {
 		if (user.getBirthday().isAfter(LocalDate.now())){
 			logAndThrow("дата рождения не может быть в будущем");
 		}
-		for (User user1 : users.values()) {
-			if (user1.getEmail().equals(user.getEmail())) {
-				String msg = "электронная почта должна содержать символ @";
-				log.error(msg);
-				throw new DuplicatedDataException(msg);
-			}
-		}
-		if (user.getName().isBlank()) {
+//		for (User user1 : users.values()) {
+//			if (user1.getEmail().equals(user.getEmail())) {
+//				String msg = "такой электронный адрес уже есть в базе";
+//				log.error(msg);
+//				throw new DuplicatedDataException(msg);
+//			}
+//		}
+		if (user.getName() == null || user.getName().isBlank()) {
 			user.setName(user.getLogin());
 		}
 	}
