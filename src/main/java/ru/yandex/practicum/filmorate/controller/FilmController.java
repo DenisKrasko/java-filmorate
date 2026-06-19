@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/films")
+@RequestMapping("/v1/films")
 public class FilmController {
 	@Getter
 	private final Map<Long, Film> films = new HashMap<>();
@@ -26,13 +26,7 @@ public class FilmController {
 
 	@PostMapping
 	public Film create(@RequestBody Film film) {
-		log.trace("проверяем выполнение необходимых условий");
-		validateFilm(film);
-		log.trace("формируем дополнительные данные");
-		film.setId(getNextId());
-		log.trace("сохраняем новый фильм в памяти приложения");
-		films.put(film.getId(), film);
-		return film;
+		return saveFilm(film);
 	}
 
 	@PutMapping
@@ -54,6 +48,16 @@ public class FilmController {
 		}
 		log.error("Фильм с id = {} не найден", newFilm.getId());
 		throw new NotFoundException("Фильм с id = " + newFilm.getId() + " не найден");
+	}
+
+	private Film saveFilm(Film film) {
+		log.trace("проверяем выполнение необходимых условий");
+		validateFilm(film);
+		log.trace("формируем дополнительные данные");
+		film.setId(getNextId());
+		log.trace("сохраняем новый фильм в памяти приложения");
+		films.put(film.getId(), film);
+		return film;
 	}
 
 	/**
