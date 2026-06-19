@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/v1/films")
+@RequestMapping("/films")
 public class FilmController {
 	@Getter
 	private final Map<Long, Film> films = new HashMap<>();
