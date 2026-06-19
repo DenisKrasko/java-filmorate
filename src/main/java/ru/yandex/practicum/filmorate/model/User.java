@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,17 +15,6 @@ public class User {
 	private String email;
 	private String login;
 	private String name;
+	@JsonFormat
 	private LocalDate birthday;
-
-	public void setBirthday(String dateStr) {
-		if (dateStr == null || dateStr.isEmpty()) {
-			this.birthday = null;
-		} else {
-			this.birthday = LocalDate.parse(dateStr);
-		}
-	}
-
-	public void setBirthday(LocalDate date) {
-		this.birthday = date;
-	}
 }

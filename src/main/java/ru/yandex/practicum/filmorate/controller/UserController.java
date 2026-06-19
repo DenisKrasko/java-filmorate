@@ -32,19 +32,19 @@ public class UserController {
 	}
 
 	@PutMapping
-	public User update(@RequestBody User newUser) {
+	public User update(@Valid @RequestBody User newUser) {
 		return updateUser(newUser);
 	}
 
 	private User updateUser(User newUser) {
-		log.trace("проверка выполнения необходимых условий при эндпоинте Put");
+		log.error("проверка выполнения необходимых условий при эндпоинте Put");
 		validateUser(newUser);
 		if (newUser.getId() == null) {
 			logAndThrow("Id должен быть указан");
 		}
 		if (users.containsKey(newUser.getId())) {
 			User oldUser = users.get(newUser.getId());
-			log.trace("пользователь найден и все условия соблюдены, обновляем его содержимое");
+			log.error("пользователь найден и все условия соблюдены, обновляем его содержимое");
 			oldUser.setLogin(newUser.getLogin());
 			oldUser.setEmail(newUser.getEmail());
 			if (oldUser.getName().isBlank()) {

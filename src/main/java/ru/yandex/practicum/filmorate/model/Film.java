@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,18 +15,7 @@ public class Film {
 	private Long id;
 	private String name;
 	private String description;
+	@JsonFormat
 	private LocalDate releaseDate;
 	private int duration;
-
-	public void setReleaseDate(String dateStr) {
-		if (dateStr == null || dateStr.isEmpty()) {
-			this.releaseDate = null;
-		} else {
-			this.releaseDate = LocalDate.parse(dateStr);
-		}
-	}
-
-	public void setReleaseDate(LocalDate date) {
-		this.releaseDate = date;
-	}
 }
