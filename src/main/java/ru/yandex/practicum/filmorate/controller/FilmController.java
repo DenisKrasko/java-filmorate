@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,14 +25,16 @@ public class FilmController {
 	}
 
 	@PostMapping
-	public Film create(@RequestBody Film film) {
+	public Film create(@Valid @RequestBody Film film) {
 		return saveFilm(film);
 	}
 
 	@PutMapping
-	public Film update(@RequestBody Film newFilm) {
-		log.trace("проверяем необходимые условия");
-		validateFilm(newFilm);
+	public Film update(@Valid @RequestBody Film newFilm) {
+		return updateFilm(newFilm);
+	}
+
+	private Film updateFilm(Film newFilm) {
 		if (newFilm.getId() == null) {
 			throw new ConditionsNotMetException("Id должен быть указан");
 		}
@@ -51,8 +53,6 @@ public class FilmController {
 	}
 
 	private Film saveFilm(Film film) {
-		log.trace("проверяем выполнение необходимых условий");
-		validateFilm(film);
 		log.trace("формируем дополнительные данные");
 		film.setId(getNextId());
 		log.trace("сохраняем новый фильм в памяти приложения");
@@ -75,20 +75,5 @@ public class FilmController {
 	private void logAndThrow(String message) {
 		log.error(message);
 		throw new ConditionsNotMetException(message);
-	}
-
-	private void validateFilm(Film film) {
-		if (film.getName() == null || film.getName().isBlank()) {
-			logAndThrow("Название не может быть пустым");
-		}
-		if (film.getDescription().length() > 200) {
-			logAndThrow("Максимальная длина описания — 200 символов");
-		}
-		if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-			logAndThrow("дата релиза должна быть не раньше 28 декабря 1895 года");
-		}
-		if (film.getDuration() <= 0) {
-			logAndThrow("продолжительность фильма должна быть положительным числом");
-		}
 	}
 }

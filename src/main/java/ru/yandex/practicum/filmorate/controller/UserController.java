@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/v1/users")
 public class UserController {
 	@Getter
 	private final Map<Long, User> users = new HashMap<>();
@@ -28,17 +29,15 @@ public class UserController {
 
 	@PostMapping
 	public User create(@Valid @RequestBody User user) {
-		log.trace("проверка выполнения необходимых условий при эндпоинте Post");
-		validateUser(user);
-		log.trace("формирование дополнительных данных");
-		user.setId(getNextId());
-		log.trace("сохранение нового пользователя в памяти приложения");
-		users.put(user.getId(), user);
-		return users.get(user.getId());
+		return saveUser(user);
 	}
 
 	@PutMapping
 	public User update(@RequestBody User newUser) {
+		return updateUser(newUser);
+	}
+
+	private User updateUser(User newUser) {
 		log.trace("проверка выполнения необходимых условий при эндпоинте Put");
 		validateUser(newUser);
 		if (newUser.getId() == null) {
@@ -59,6 +58,16 @@ public class UserController {
 		}
 		log.error("User с id = {} не найден", newUser.getId());
 		throw new NotFoundException("User с id = " + newUser.getId() + " не найден");
+	}
+
+	private User saveUser(User user) {
+		log.trace("проверка выполнения необходимых условий при эндпоинте Post");
+		validateUser(user);
+		log.trace("формирование дополнительных данных");
+		user.setId(getNextId());
+		log.trace("сохранение нового пользователя в памяти приложения");
+		users.put(user.getId(), user);
+		return users.get(user.getId());
 	}
 
 	/**

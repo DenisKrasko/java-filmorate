@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class User {
 	@EqualsAndHashCode.Exclude
 	private Long id;
-	@Email
+	@Email(message = "Некорректный email")
 	private String email;
 	private String login;
 	private String name;
