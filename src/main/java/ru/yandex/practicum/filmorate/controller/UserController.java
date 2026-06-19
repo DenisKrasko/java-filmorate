@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -88,23 +87,8 @@ public class UserController {
 	}
 
 	private void validateUser(User user) {
-		if (user.getEmail() == null || user.getEmail().isBlank()) {
-			logAndThrow("Имейл должен быть указан");
-		}
-		if (!user.getEmail().contains("@")) {
-			logAndThrow("электронная почта должна содержать символ @");
-		}
-		if (user.getLogin() == null || user.getLogin().isBlank()) {
-			logAndThrow("логин не может быть пустым");
-		}
-		if (user.getLogin().contains(" ")) {
-			logAndThrow("логин не может содержать пробелы");
-		}
 		if (user.getBirthday().isAfter(LocalDate.now())) {
 			logAndThrow("дата рождения не может быть в будущем");
-		}
-		if (user.getName() == null || user.getName().isBlank()) {
-			user.setName(user.getLogin());
 		}
 	}
 }

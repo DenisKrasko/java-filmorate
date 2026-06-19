@@ -1,19 +1,30 @@
 package ru.yandex.practicum.filmorate;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.xml.validation.Validator;
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class FilmorateApplicationTests {
+//	private Validator validator;
+
+//	@BeforeEach
+//	void setUp() {
+//		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+//		validator = (Validator) factory.getValidator();
+//	}
 
 	@Test
 	void contextLoads() {
@@ -33,7 +44,7 @@ class FilmorateApplicationTests {
 		Film film = new Film();
 		film.setName("Batman");
 		film.setDuration(218);
-		film.setReleaseDate("1999-03-25");
+		film.setReleaseDate(LocalDate.parse("1999-03-25"));
 		film.setDescription("adventures Batman and Robin");
 		filmController.create(film);
 		Map<Long, Film> filmsExp = new HashMap<>();
@@ -45,11 +56,13 @@ class FilmorateApplicationTests {
 	void filmTitleMustNotBeEmpty() {
 		FilmController filmController = new FilmController();
 		Film film = new Film();
-		film.setName("");
+		film.setName("  ");
 		film.setDuration(218);
-		film.setReleaseDate("1999-03-25");
+		film.setReleaseDate(LocalDate.parse("1999-03-25"));
 		film.setDescription("adventures Batman and Robin");
-		assertThrows(ConditionsNotMetException.class, () -> filmController.create(film), "Error");
+//		Set<ConstraintViolation<Film>> violations = validator.validate(film);
+//		assertFalse(violations.isEmpty());
+		assertThrows(MethodArgumentNotValidException.class, () -> filmController.create(film), "Error");
 	}
 
 	@Test
@@ -58,7 +71,7 @@ class FilmorateApplicationTests {
 		Film film = new Film();
 		film.setName("Batman");
 		film.setDuration(218);
-		film.setReleaseDate("1999-03-25");
+		film.setReleaseDate(LocalDate.parse("1999-03-25"));
 		film.setDescription("A".repeat(201));
 		assertThrows(ConditionsNotMetException.class, () -> filmController.create(film), "Error");
 	}
@@ -69,7 +82,7 @@ class FilmorateApplicationTests {
 		Film film = new Film();
 		film.setName("Batman");
 		film.setDuration(218);
-		film.setReleaseDate("1895-03-25");
+		film.setReleaseDate(LocalDate.parse("1895-03-25"));
 		film.setDescription("adventures Batman and Robin");
 		assertThrows(ConditionsNotMetException.class, () -> filmController.create(film), "Error");
 	}
@@ -80,7 +93,7 @@ class FilmorateApplicationTests {
 		Film film = new Film();
 		film.setName("Batman");
 		film.setDuration(-218);
-		film.setReleaseDate("1999-03-25");
+		film.setReleaseDate(LocalDate.parse("1999-03-25"));
 		film.setDescription("adventures Batman and Robin");
 		assertThrows(ConditionsNotMetException.class, () -> filmController.create(film), "Error");
 	}
@@ -91,7 +104,7 @@ class FilmorateApplicationTests {
 		user.setName("Dima");
 		user.setLogin("dima99");
 		user.setEmail("dima99@gmail.com");
-		user.setBirthday("1999-03-25");
+		user.setBirthday(LocalDate.parse("1999-03-25"));
 		UserController userController = new UserController();
 		userController.create(user);
 		Map<Long, User> usersExp = new HashMap<>();
@@ -105,7 +118,7 @@ class FilmorateApplicationTests {
 		user.setName("Dima");
 		user.setLogin("dima99");
 		user.setEmail("");
-		user.setBirthday("1999-03-25");
+		user.setBirthday(LocalDate.parse("1999-03-25"));
 		UserController userController = new UserController();
 		assertThrows(ConditionsNotMetException.class, () -> userController.create(user), "Error");
 	}
@@ -116,7 +129,7 @@ class FilmorateApplicationTests {
 		user.setName("Dima");
 		user.setLogin("dima99");
 		user.setEmail("asdsadcom");
-		user.setBirthday("1999-03-25");
+		user.setBirthday(LocalDate.parse("1999-03-25"));
 		UserController userController = new UserController();
 		assertThrows(ConditionsNotMetException.class, () -> userController.create(user), "Error");
 	}
@@ -127,7 +140,7 @@ class FilmorateApplicationTests {
 		user.setName("Dima");
 		user.setLogin("");
 		user.setEmail("asdsad@com");
-		user.setBirthday("1999-03-25");
+		user.setBirthday(LocalDate.parse("1999-03-25"));
 		UserController userController = new UserController();
 		assertThrows(ConditionsNotMetException.class, () -> userController.create(user), "Error");
 	}
@@ -138,7 +151,7 @@ class FilmorateApplicationTests {
 		user.setName("Dima");
 		user.setLogin("di ma");
 		user.setEmail("asdsad@com");
-		user.setBirthday("1999-03-25");
+		user.setBirthday(LocalDate.parse("1999-03-25"));
 		UserController userController = new UserController();
 		assertThrows(ConditionsNotMetException.class, () -> userController.create(user), "Error");
 	}
@@ -149,7 +162,7 @@ class FilmorateApplicationTests {
 		user.setName("Dima");
 		user.setLogin("dima99");
 		user.setEmail("asdsad@com");
-		user.setBirthday("2028-03-25");
+		user.setBirthday(LocalDate.parse("2028-03-25"));
 		UserController userController = new UserController();
 		assertThrows(ConditionsNotMetException.class, () -> userController.create(user), "Error");
 	}
@@ -160,12 +173,12 @@ class FilmorateApplicationTests {
 		user.setName("");
 		user.setLogin("dima99");
 		user.setEmail("asdsad@com");
-		user.setBirthday("2001-03-25");
+		user.setBirthday(LocalDate.parse("2001-03-25"));
 		User userExp = new User();
 		userExp.setName("dima99");
 		userExp.setLogin("dima99");
 		userExp.setEmail("asdsad@com");
-		userExp.setBirthday("2001-03-25");
+		userExp.setBirthday(LocalDate.parse("2001-03-25"));
 		UserController userController = new UserController();
 		userController.create(user);
 		assertEquals(userExp, userController.getUsers().get((long) 1), "Error");

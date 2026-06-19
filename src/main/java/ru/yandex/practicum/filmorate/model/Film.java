@@ -1,12 +1,14 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 
+import javax.xml.transform.Source;
 import java.time.LocalDate;
 
 /**
@@ -18,22 +20,12 @@ public class Film {
 	private Long id;
 	@NotBlank(message = "Название не может быть пустым")
 	private String name;
-	@Size(message = "Максимальная длина описания — 200 символов")
+	@Size(max = 200, message = "Максимальная длина описания — 200 символов")
 	private String description;
-	@AfterCinemaBirthday(message = "Дата релиза должна быть не раньше 28 декабря 1895 года")
+	@NotNull(message = "Дата релиза обязательна")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate releaseDate;
 	@Positive(message = "Продолжительность фильма должна быть положительным числом")
 	private int duration;
 
-	public void setReleaseDate(String dateStr) {
-		if (dateStr == null || dateStr.isEmpty()) {
-			this.releaseDate = null;
-		} else {
-			this.releaseDate = LocalDate.parse(dateStr);
-		}
-	}
-
-	public void setReleaseDate(LocalDate date) {
-		this.releaseDate = date;
-	}
 }
