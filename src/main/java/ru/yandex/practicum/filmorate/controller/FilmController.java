@@ -31,6 +31,10 @@ public class FilmController {
 
 	@PutMapping
 	public Film update(@RequestBody Film newFilm) {
+		return updateFilm(newFilm);
+	}
+
+	private Film updateFilm(Film newFilm) {
 		log.trace("проверяем необходимые условия");
 		validateFilm(newFilm);
 		if (newFilm.getId() == null) {
