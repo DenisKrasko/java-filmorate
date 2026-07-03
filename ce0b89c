@@ -1,0 +1,23 @@
+[33m9b0a7a5[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mcontrollers-films-users[m[33m)[m HEAD@{0}: commit: делаю всё заного до правок
+[33m99fdc28[m[33m ([m[1;31morigin/controllers-films-users[m[33m)[m HEAD@{1}: reset: moving to 99fdc28496ce609ae7e46422145b4b0a1feed8a4
+[33m0daac7d[m HEAD@{2}: reset: moving to 0daac7dbfb0383aa5c7ba9643b1f82d392b8cb19
+[33mce0b89c[m HEAD@{3}: commit: пытался делать правки но тесты попадали, пока не знаю как решить
+[33mded3bdd[m HEAD@{4}: commit: валидации переношу в объекты
+[33m0daac7d[m HEAD@{5}: commit: добавил приватную функцию в постмапинг
+[33m99fdc28[m[33m ([m[1;31morigin/controllers-films-users[m[33m)[m HEAD@{6}: commit: подправил чекстайл
+[33m078f5a7[m HEAD@{7}: checkout: moving from controllers-films-users to controllers-films-users
+[33m078f5a7[m HEAD@{8}: branch: Reset to origin/controllers-films-users
+[33m078f5a7[m HEAD@{9}: commit: Доделал основное и дополнительно задание
+[33mf92e9a4[m HEAD@{10}: commit: доделал основное задание и тесты. перехожу к дополнительному заданию
+[33mc1de4e4[m HEAD@{11}: commit: удалил исключение для дубликата мейла, так как падал один из тестов
+[33m86fc208[m HEAD@{12}: commit: удалил исключение для дубликата мейла, так как падал один из тестов
+[33m1290f8b[m HEAD@{13}: commit: выдаёт ошибку при тестах
+[33m5802efd[m HEAD@{14}: commit: исправил ошибку в классе UserController
+[33m0197887[m HEAD@{15}: commit (amend): second commit
+[33m3f706a8[m HEAD@{16}: commit: second commit
+[33m1236f46[m HEAD@{17}: commit: second commit
+[33mc91dc68[m HEAD@{18}: commit (amend): First commit
+[33m8917db9[m HEAD@{19}: commit: First commit
+[33md377570[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32mdevelop[m[33m)[m HEAD@{20}: checkout: moving from develop to controllers-films-users
+[33md377570[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32mdevelop[m[33m)[m HEAD@{21}: checkout: moving from main to develop
+[33md377570[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32mdevelop[m[33m)[m HEAD@{22}: clone: from https://github.com/DenisKrasko/java-filmorate.git
