@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 public class User {
@@ -17,4 +18,13 @@ public class User {
 	private String name;
 	@JsonFormat
 	private LocalDate birthday;
+	private Set<Long> friends;
+
+	public void addFriend(User friend) {
+		friends.add(friend.getId());
+	}
+
+	public void delFriend(User friend) {
+		friends.remove(friend.getId());
+	}
 }
