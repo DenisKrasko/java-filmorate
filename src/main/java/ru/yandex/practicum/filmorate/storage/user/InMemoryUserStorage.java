@@ -1,23 +1,25 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class InMemoryUserStorage implements UserStorage{
 	@Getter
-	private final Map<Long, User> users = new HashMap<>();
+	private final Map<Long, User> users;
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
 	@Override
@@ -35,11 +37,20 @@ public class InMemoryUserStorage implements UserStorage{
 		return updateUser(newUser);
 	}
 
+	@Override
+	public User findUserById(Long id) {
+		if (!users.containsKey(id)) {
+			throw new NotFoundException("Пользователя с id " + id +" не найдено");
+		}
+		return users.get(id);
+	}
+
 	private User updateUser(User newUser) {
 		log.error("проверка выполнения необходимых условий при эндпоинте Put");
 		validateUser(newUser);
 		if (newUser.getId() == null) {
 			logAndThrow("Id должен быть указан");
+			throw new ConditionsNotMetException("Id должен быть указан");
 		}
 		if (users.containsKey(newUser.getId())) {
 			User oldUser = users.get(newUser.getId());
@@ -82,7 +93,7 @@ public class InMemoryUserStorage implements UserStorage{
 
 	private void logAndThrow(String message) {
 		log.error(message);
-		throw new ConditionsNotMetException(message);
+		throw new ValidationException(message);
 	}
 
 	private void validateUser(User user) {

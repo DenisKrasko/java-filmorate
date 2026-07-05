@@ -6,25 +6,26 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
 public class User {
 	@EqualsAndHashCode.Exclude
 	private Long id;
-	@Email
 	private String email;
 	private String login;
 	private String name;
 	@JsonFormat
 	private LocalDate birthday;
-	private Set<Long> friends;
+	private Set<Long> friends = new HashSet<>();
 
-	public void addFriend(User friend) {
-		friends.add(friend.getId());
+	public void addFriend(long id) {
+		friends.add(id);
+		System.out.println(friends);
 	}
 
-	public void delFriend(User friend) {
-		friends.remove(friend.getId());
+	public void delFriend(long friendId) {
+		friends.remove(friendId);
 	}
 }
