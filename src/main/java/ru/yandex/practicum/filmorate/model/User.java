@@ -22,7 +22,6 @@ public class User {
 
 	public void addFriend(long id) {
 		friends.add(id);
-		System.out.println(friends);
 	}
 
 	public void delFriend(long friendId) {
