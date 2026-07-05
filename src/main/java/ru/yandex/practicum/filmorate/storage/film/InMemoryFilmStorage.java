@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class InMemoryFilmStorage implements FilmStorage{
+public class InMemoryFilmStorage implements FilmStorage {
 	@Getter
 	private final Map<Long, Film> films = new HashMap<>();
 	private static final Logger log = LoggerFactory.getLogger(FilmController.class);
@@ -103,7 +103,7 @@ public class InMemoryFilmStorage implements FilmStorage{
 	@Override
 	public Film findFilmById(Long id) {
 		if (!films.containsKey(id)) {
-			throw new NotFoundException("Фильма с id " + id +" не найдено");
+			throw new NotFoundException("Фильма с id " + id + " не найдено");
 		}
 		return films.get(id);
 	}
