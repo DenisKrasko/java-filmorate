@@ -25,7 +25,6 @@ public class UserService {
 		User friend = userStorage.getUsers().get(friendId);
 		user.addFriend(friendId);
 		friend.addFriend(id);
-
 	}
 
 	public void delFriend(long id, long friendId) {

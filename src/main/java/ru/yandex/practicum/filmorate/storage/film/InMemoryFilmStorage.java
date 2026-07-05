@@ -1,12 +1,14 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
@@ -15,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class InMemoryFilmStorage implements FilmStorage{
 	@Getter
 	private final Map<Long, Film> films = new HashMap<>();
@@ -82,7 +85,7 @@ public class InMemoryFilmStorage implements FilmStorage{
 
 	private void logAndThrow(String message) {
 		log.error(message);
-		throw new ConditionsNotMetException(message);
+		throw new ValidationException(message);
 	}
 
 	/**
@@ -95,5 +98,13 @@ public class InMemoryFilmStorage implements FilmStorage{
 				.max()
 				.orElse(0);
 		return ++currentMaxId;
+	}
+
+	@Override
+	public Film findFilmById(Long id) {
+		if (!films.containsKey(id)) {
+			throw new NotFoundException("Фильма с id " + id +" не найдено");
+		}
+		return films.get(id);
 	}
 }
