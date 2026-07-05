@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class InMemoryUserStorage implements UserStorage{
+public class InMemoryUserStorage implements UserStorage {
 	@Getter
 	private final Map<Long, User> users;
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -40,7 +40,7 @@ public class InMemoryUserStorage implements UserStorage{
 	@Override
 	public User findUserById(Long id) {
 		if (!users.containsKey(id)) {
-			throw new NotFoundException("Пользователя с id " + id +" не найдено");
+			throw new NotFoundException("Пользователя с id " + id + " не найдено");
 		}
 		return users.get(id);
 	}
