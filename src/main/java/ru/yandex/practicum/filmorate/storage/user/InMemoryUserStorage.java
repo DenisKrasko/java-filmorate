@@ -116,4 +116,9 @@ public class InMemoryUserStorage implements UserStorage {
 			user.setName(user.getLogin());
 		}
 	}
+
+	@Override
+	public Map<Long, User> getUsers() {
+		return users;
+	}
 }
