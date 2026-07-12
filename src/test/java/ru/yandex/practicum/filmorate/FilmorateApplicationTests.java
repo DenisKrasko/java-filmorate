@@ -4,9 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.InstanceFilmService;
+import ru.yandex.practicum.filmorate.service.InstanceUserService;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -22,7 +26,7 @@ class FilmorateApplicationTests {
 
 	@Test
 	void emptyMapIsReturnedWhenNoFilmsAdded() {
-		FilmController filmController = new FilmController();
+		FilmController filmController = new FilmController(new InstanceFilmService(new InMemoryFilmStorage(), new InMemoryUserStorage(new HashMap<Long, User>())));
 		Collection<Film> films = filmController.findAll();
 		Map<Long, Film> filmsExp = new HashMap<>();
 		assertIterableEquals(filmsExp.values(), films);
@@ -30,7 +34,7 @@ class FilmorateApplicationTests {
 
 	@Test
 	void createShouldAddExactlyOneFilm() {
-		FilmController filmController = new FilmController();
+		FilmController filmController = new FilmController(new InstanceFilmService(new InMemoryFilmStorage(), new InMemoryUserStorage(new HashMap<Long, User>())));
 		Film film = new Film();
 		film.setName("Batman");
 		film.setDuration(218);
@@ -39,51 +43,51 @@ class FilmorateApplicationTests {
 		filmController.create(film);
 		Map<Long, Film> filmsExp = new HashMap<>();
 		filmsExp.put((long) 1, film);
-		assertIterableEquals(filmsExp.values(), filmController.getFilms().values(), "Error");
+		assertIterableEquals(filmsExp.values(), filmController.getFilmService().getFilmStorage().getFilms().values(), "Error");
 	}
 
 	@Test
 	void filmTitleMustNotBeEmpty() {
-		FilmController filmController = new FilmController();
+		FilmController filmController = new FilmController(new InstanceFilmService(new InMemoryFilmStorage(), new InMemoryUserStorage(new HashMap<Long, User>())));
 		Film film = new Film();
 		film.setName("");
 		film.setDuration(218);
 		film.setReleaseDate(LocalDate.of(1999,3,25));
 		film.setDescription("adventures Batman and Robin");
-		assertThrows(ConditionsNotMetException.class, () -> filmController.create(film), "Error");
+		assertThrows(ValidationException.class, () -> filmController.create(film), "Error");
 	}
 
 	@Test
 	void descriptionOver200CharactersIsInvalid() {
-		FilmController filmController = new FilmController();
+		FilmController filmController = new FilmController(new InstanceFilmService(new InMemoryFilmStorage(), new InMemoryUserStorage(new HashMap<Long, User>())));
 		Film film = new Film();
 		film.setName("Batman");
 		film.setDuration(218);
 		film.setReleaseDate(LocalDate.of(1999,3,25));
 		film.setDescription("A".repeat(201));
-		assertThrows(ConditionsNotMetException.class, () -> filmController.create(film), "Error");
+		assertThrows(ValidationException.class, () -> filmController.create(film), "Error");
 	}
 
 	@Test
 	void releaseDateBefore28December1895IsInvalid() {
-		FilmController filmController = new FilmController();
+		FilmController filmController = new FilmController(new InstanceFilmService(new InMemoryFilmStorage(), new InMemoryUserStorage(new HashMap<Long, User>())));
 		Film film = new Film();
 		film.setName("Batman");
 		film.setDuration(218);
 		film.setReleaseDate(LocalDate.of(1895,3,25));
 		film.setDescription("adventures Batman and Robin");
-		assertThrows(ConditionsNotMetException.class, () -> filmController.create(film), "Error");
+		assertThrows(ValidationException.class, () -> filmController.create(film), "Error");
 	}
 
 	@Test
 	void negativeDurationIsInvalid() {
-		FilmController filmController = new FilmController();
+		FilmController filmController = new FilmController(new InstanceFilmService(new InMemoryFilmStorage(), new InMemoryUserStorage(new HashMap<Long, User>())));
 		Film film = new Film();
 		film.setName("Batman");
 		film.setDuration(-218);
 		film.setReleaseDate(LocalDate.of(1999,3,25));
 		film.setDescription("adventures Batman and Robin");
-		assertThrows(ConditionsNotMetException.class, () -> filmController.create(film), "Error");
+		assertThrows(ValidationException.class, () -> filmController.create(film), "Error");
 	}
 
 	@Test
@@ -93,11 +97,11 @@ class FilmorateApplicationTests {
 		user.setLogin("dima99");
 		user.setEmail("dima99@gmail.com");
 		user.setBirthday(LocalDate.of(2001,3,25));
-		UserController userController = new UserController();
+		UserController userController = new UserController(new InstanceUserService(new InMemoryUserStorage(new HashMap<Long, User>())));
 		userController.create(user);
 		Map<Long, User> usersExp = new HashMap<>();
 		usersExp.put((long) 1, user);
-		assertIterableEquals(usersExp.values(), userController.getUsers().values(), "Error");
+		assertIterableEquals(usersExp.values(), userController.getUserService().getUserStorage().getUsers().values(), "Error");
 	}
 
 	@Test
@@ -107,8 +111,8 @@ class FilmorateApplicationTests {
 		user.setLogin("dima99");
 		user.setEmail("");
 		user.setBirthday(LocalDate.of(2001,3,25));
-		UserController userController = new UserController();
-		assertThrows(ConditionsNotMetException.class, () -> userController.create(user), "Error");
+		UserController userController = new UserController(new InstanceUserService(new InMemoryUserStorage(new HashMap<Long, User>())));
+		assertThrows(ValidationException.class, () -> userController.create(user), "Error");
 	}
 
 	@Test
@@ -118,8 +122,8 @@ class FilmorateApplicationTests {
 		user.setLogin("dima99");
 		user.setEmail("asdsadcom");
 		user.setBirthday(LocalDate.of(2001,3,25));
-		UserController userController = new UserController();
-		assertThrows(ConditionsNotMetException.class, () -> userController.create(user), "Error");
+		UserController userController = new UserController(new InstanceUserService(new InMemoryUserStorage(new HashMap<Long, User>())));
+		assertThrows(ValidationException.class, () -> userController.create(user), "Error");
 	}
 
 	@Test
@@ -129,8 +133,8 @@ class FilmorateApplicationTests {
 		user.setLogin("");
 		user.setEmail("asdsad@com");
 		user.setBirthday(LocalDate.of(2001,3,25));
-		UserController userController = new UserController();
-		assertThrows(ConditionsNotMetException.class, () -> userController.create(user), "Error");
+		UserController userController = new UserController(new InstanceUserService(new InMemoryUserStorage(new HashMap<Long, User>())));
+		assertThrows(ValidationException.class, () -> userController.create(user), "Error");
 	}
 
 	@Test
@@ -140,8 +144,8 @@ class FilmorateApplicationTests {
 		user.setLogin("di ma");
 		user.setEmail("asdsad@com");
 		user.setBirthday(LocalDate.of(1999,3,25));
-		UserController userController = new UserController();
-		assertThrows(ConditionsNotMetException.class, () -> userController.create(user), "Error");
+		UserController userController = new UserController(new InstanceUserService(new InMemoryUserStorage(new HashMap<Long, User>())));
+		assertThrows(ValidationException.class, () -> userController.create(user), "Error");
 	}
 
 	@Test
@@ -151,8 +155,8 @@ class FilmorateApplicationTests {
 		user.setLogin("dima99");
 		user.setEmail("asdsad@com");
 		user.setBirthday(LocalDate.of(2028,3,25));
-		UserController userController = new UserController();
-		assertThrows(ConditionsNotMetException.class, () -> userController.create(user), "Error");
+		UserController userController = new UserController(new InstanceUserService(new InMemoryUserStorage(new HashMap<Long, User>())));
+		assertThrows(ValidationException.class, () -> userController.create(user), "Error");
 	}
 
 	@Test
@@ -167,8 +171,8 @@ class FilmorateApplicationTests {
 		userExp.setLogin("dima99");
 		userExp.setEmail("asdsad@com");
 		userExp.setBirthday(LocalDate.of(2001,3,25));
-		UserController userController = new UserController();
+		UserController userController = new UserController(new InstanceUserService(new InMemoryUserStorage(new HashMap<Long, User>())));
 		userController.create(user);
-		assertEquals(userExp, userController.getUsers().get((long) 1), "Error");
+		assertEquals(userExp, userController.getUserService().getUserStorage().getUsers().get((long) 1), "Error");
 	}
 }
