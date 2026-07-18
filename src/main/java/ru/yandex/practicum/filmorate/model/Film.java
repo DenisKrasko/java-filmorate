@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,6 +22,8 @@ public class Film {
 	private LocalDate releaseDate;
 	private int duration;
 	private Set<Long> likes = new HashSet<>();
+	private Mpa mpa;
+	private List<Genre> genres;
 
 	public void addLike(long userId) {
 		likes.add(userId);
