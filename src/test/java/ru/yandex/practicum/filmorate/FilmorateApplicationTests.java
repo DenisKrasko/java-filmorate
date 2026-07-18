@@ -93,7 +93,7 @@ class FilmorateApplicationTests {
 	@Test
 	void validUserShouldBeAddedSuccessfully() {
 		User user = new User();
-		user.setName("Dima");
+		user.setUsername("Dima");
 		user.setLogin("dima99");
 		user.setEmail("dima99@gmail.com");
 		user.setBirthday(LocalDate.of(2001,3,25));
@@ -107,7 +107,7 @@ class FilmorateApplicationTests {
 	@Test
 	void emptyEmailIsInvalid() {
 		User user = new User();
-		user.setName("Dima");
+		user.setUsername("Dima");
 		user.setLogin("dima99");
 		user.setEmail("");
 		user.setBirthday(LocalDate.of(2001,3,25));
@@ -118,7 +118,7 @@ class FilmorateApplicationTests {
 	@Test
 	void emailMustContainAtSign() {
 		User user = new User();
-		user.setName("Dima");
+		user.setUsername("Dima");
 		user.setLogin("dima99");
 		user.setEmail("asdsadcom");
 		user.setBirthday(LocalDate.of(2001,3,25));
@@ -129,7 +129,7 @@ class FilmorateApplicationTests {
 	@Test
 	void loginMustNotBeEmpty() {
 		User user = new User();
-		user.setName("Dima");
+		user.setUsername("Dima");
 		user.setLogin("");
 		user.setEmail("asdsad@com");
 		user.setBirthday(LocalDate.of(2001,3,25));
@@ -140,7 +140,7 @@ class FilmorateApplicationTests {
 	@Test
 	void loginMustNotContainSpaces() {
 		User user = new User();
-		user.setName("Dima");
+		user.setUsername("Dima");
 		user.setLogin("di ma");
 		user.setEmail("asdsad@com");
 		user.setBirthday(LocalDate.of(1999,3,25));
@@ -151,7 +151,7 @@ class FilmorateApplicationTests {
 	@Test
 	void birthdayMustNotBeInFuture() {
 		User user = new User();
-		user.setName("Dima");
+		user.setUsername("Dima");
 		user.setLogin("dima99");
 		user.setEmail("asdsad@com");
 		user.setBirthday(LocalDate.of(2028,3,25));
@@ -162,12 +162,12 @@ class FilmorateApplicationTests {
 	@Test
 	void emptyDisplayNameShouldFallbackToLogin() {
 		User user = new User();
-		user.setName("");
+		user.setUsername("");
 		user.setLogin("dima99");
 		user.setEmail("asdsad@com");
 		user.setBirthday(LocalDate.of(2001,3,25));
 		User userExp = new User();
-		userExp.setName("dima99");
+		userExp.setUsername("dima99");
 		userExp.setLogin("dima99");
 		userExp.setEmail("asdsad@com");
 		userExp.setBirthday(LocalDate.of(2001,3,25));

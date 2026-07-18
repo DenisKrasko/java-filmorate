@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -9,11 +9,15 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class InstanceUserService implements UserService {
 	private final UserStorage userStorage;
+
+	public InstanceUserService(@Qualifier("userDbStorage") UserStorage userStorage) {
+		this.userStorage = userStorage;
+	}
 
 	@Override
 	public void addFriend(long id, long friendId) {
@@ -58,12 +62,16 @@ public class InstanceUserService implements UserService {
 
 	@Override
 	public List<User> getSharedFriends(long id, long otherId) {
+		Map<Long, User> allUsers = userStorage.getUsers();
+		User user1 = allUsers.get(id);
+		User user2 = allUsers.get(otherId);
+		if (user1 == null || user2 == null) {
+			throw new NotFoundException("Пользователь не найден");
+		}
 		List<User> sharedFriends = new ArrayList<>();
-		User user1 = userStorage.getUsers().get(id);
-		User user2 = userStorage.getUsers().get(otherId);
-		for (Long id2 : user1.getFriends()) {
-			if (user2.getFriends().contains(id2)) {
-				sharedFriends.add(userStorage.findUserById(id2));
+		for (Long friendId : user1.getFriends()) {
+			if (user2.getFriends().contains(friendId)) {
+				sharedFriends.add(allUsers.get(friendId));
 			}
 		}
 		return sharedFriends;
@@ -86,7 +94,7 @@ public class InstanceUserService implements UserService {
 
 	@Override
 	public User findUserById(Long id) {
-		return userStorage.findUserById(id);
+		return userStorage.findById(id).orElseThrow(() -> new NotFoundException("Пользователь c id " + id + " не найден"));
 	}
 
 	@Override

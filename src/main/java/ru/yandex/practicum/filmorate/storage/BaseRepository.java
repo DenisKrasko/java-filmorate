@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import ru.yandex.practicum.filmorate.exception.InternalServerException;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -56,8 +55,10 @@ public class BaseRepository<T> {
 		}
 	}
 
-	protected boolean update(String query, Object... params) {
+	protected void update(String query, Object... params) {
 		int rowsUpdated = jdbc.update(query, params);
-		return rowsUpdated > 0;
+		if (rowsUpdated == 0) {
+			throw new InternalServerException("Не удалось обновить данные");
+		}
 	}
 }

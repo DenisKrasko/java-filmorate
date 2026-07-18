@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -38,11 +39,21 @@ public class InMemoryUserStorage implements UserStorage {
 	}
 
 	@Override
-	public User findUserById(Long id) {
+	public Optional<User> findByEmail(String email) {
+		for (User user : users.values()) {
+			if (user.getEmail().equalsIgnoreCase(email)) {
+				return Optional.of(user);
+			}
+		}
+		throw new NotFoundException("Пользователь с email " + email + " не найден");
+	}
+
+	@Override
+	public Optional<User> findById(long id) {
 		if (!users.containsKey(id)) {
 			throw new NotFoundException("Пользователя с id " + id + " не найдено");
 		}
-		return users.get(id);
+		return Optional.of(users.get(id));
 	}
 
 	private User updateUser(User newUser) {
@@ -57,10 +68,10 @@ public class InMemoryUserStorage implements UserStorage {
 			log.error("пользователь найден и все условия соблюдены, обновляем его содержимое");
 			oldUser.setLogin(newUser.getLogin());
 			oldUser.setEmail(newUser.getEmail());
-			if (oldUser.getName().isBlank()) {
-				oldUser.setName(oldUser.getLogin());
+			if (oldUser.getUsername().isBlank()) {
+				oldUser.setUsername(oldUser.getLogin());
 			} else {
-				oldUser.setName(newUser.getName());
+				oldUser.setUsername(newUser.getUsername());
 			}
 			oldUser.setBirthday(newUser.getBirthday());
 			return oldUser;
@@ -112,8 +123,8 @@ public class InMemoryUserStorage implements UserStorage {
 		if (user.getBirthday().isAfter(LocalDate.now())) {
 			logAndThrow("дата рождения не может быть в будущем");
 		}
-		if (user.getName() == null || user.getName().isBlank()) {
-			user.setName(user.getLogin());
+		if (user.getUsername() == null || user.getUsername().isBlank()) {
+			user.setUsername(user.getLogin());
 		}
 	}
 
