@@ -16,7 +16,7 @@ import java.util.Optional;
 public class BaseRepository<T> {
 	protected final JdbcTemplate jdbc;
 	protected final RowMapper<T> mapper;
-	private final Class<T> entityType;
+//	private final Class<T> entityType;
 
 	protected Optional<T> findOne(String query, Object... params) {
 		try {
@@ -28,12 +28,19 @@ public class BaseRepository<T> {
 	}
 
 	protected List<T> findMany(String query, Object... params) {
-		return jdbc.queryForList(query, entityType, params);
+		return jdbc.query(query, mapper, params);
 	}
 
 	public boolean delete(String query, long id) {
 		int rowsDeleted = jdbc.update(query, id);
 		return rowsDeleted > 0;
+	}
+
+	protected void update(String query, Object... params) {
+		int rowsUpdated = jdbc.update(query, params);
+		if (rowsUpdated == 0) {
+			throw new InternalServerException("Не удалось обновить данные");
+		}
 	}
 
 	protected long insert(String query, Object... params) {
@@ -48,6 +55,7 @@ public class BaseRepository<T> {
 		}, keyHolder);
 
 		Long id = keyHolder.getKeyAs(Long.class);
+
 		if (id != null) {
 			return id;
 		} else {
@@ -55,10 +63,5 @@ public class BaseRepository<T> {
 		}
 	}
 
-	protected void update(String query, Object... params) {
-		int rowsUpdated = jdbc.update(query, params);
-		if (rowsUpdated == 0) {
-			throw new InternalServerException("Не удалось обновить данные");
-		}
-	}
+
 }

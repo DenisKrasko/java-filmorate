@@ -19,4 +19,6 @@ public interface UserStorage {
 
 	Map<Long, User> getUsers();
 
+	User save(User user);
+
 }

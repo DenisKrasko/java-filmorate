@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Set;
 
 @Data
+@EqualsAndHashCode(of = { "email" })
 public class User {
-	@EqualsAndHashCode.Exclude
-	private Long id;
+	private long id;
 	private String email;
 	private String login;
-	private String username;
-	@JsonFormat
+	private String name;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthday;
 	private List<Long> friends = new ArrayList<>();
 

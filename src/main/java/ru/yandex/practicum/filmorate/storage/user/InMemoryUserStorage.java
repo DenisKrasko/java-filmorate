@@ -59,7 +59,7 @@ public class InMemoryUserStorage implements UserStorage {
 	private User updateUser(User newUser) {
 		log.error("проверка выполнения необходимых условий при эндпоинте Put");
 		validateUser(newUser);
-		if (newUser.getId() == null) {
+		if (newUser.getId() == 0) {
 			logAndThrow("Id должен быть указан");
 			throw new ConditionsNotMetException("Id должен быть указан");
 		}
@@ -68,10 +68,10 @@ public class InMemoryUserStorage implements UserStorage {
 			log.error("пользователь найден и все условия соблюдены, обновляем его содержимое");
 			oldUser.setLogin(newUser.getLogin());
 			oldUser.setEmail(newUser.getEmail());
-			if (oldUser.getUsername().isBlank()) {
-				oldUser.setUsername(oldUser.getLogin());
+			if (oldUser.getName().isBlank()) {
+				oldUser.setName(oldUser.getLogin());
 			} else {
-				oldUser.setUsername(newUser.getUsername());
+				oldUser.setName(newUser.getName());
 			}
 			oldUser.setBirthday(newUser.getBirthday());
 			return oldUser;
@@ -123,13 +123,18 @@ public class InMemoryUserStorage implements UserStorage {
 		if (user.getBirthday().isAfter(LocalDate.now())) {
 			logAndThrow("дата рождения не может быть в будущем");
 		}
-		if (user.getUsername() == null || user.getUsername().isBlank()) {
-			user.setUsername(user.getLogin());
+		if (user.getName() == null || user.getName().isBlank()) {
+			user.setName(user.getLogin());
 		}
 	}
 
 	@Override
 	public Map<Long, User> getUsers() {
 		return users;
+	}
+
+	@Override
+	public User save(User user) {
+		return null;
 	}
 }
