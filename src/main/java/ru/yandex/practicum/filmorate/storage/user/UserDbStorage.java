@@ -12,10 +12,7 @@ import ru.yandex.practicum.filmorate.storage.BaseRepository;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -23,14 +20,14 @@ import java.util.stream.Collectors;
 @Primary
 public class UserDbStorage extends BaseRepository<User> implements UserStorage {
 
-//	protected final JdbcTemplate jdbc;
+	//	protected final JdbcTemplate jdbc;
 //	protected final RowMapper<T> mapper;
-private static final String GET_FRIENDS_QUERY = """
-        SELECT u.id, u.email, u.login, u.name, u.birthday
-        FROM users u
-        JOIN friends f ON u.id = f.friend_id
-        WHERE f.user_id = ? AND f.status = true
-        """;
+	private static final String GET_FRIENDS_QUERY = """
+			SELECT u.id, u.email, u.login, u.name, u.birthday
+			FROM users u
+			JOIN friends f ON u.id = f.friend_id
+			WHERE f.user_id = ? AND f.status = true
+			""";
 	private static final String FIND_ALL_QUERY = "SELECT * FROM users";
 	private static final String FIND_BY_EMAIL_QUERY = "SELECT * FROM users WHERE email = ?";
 	private static final String FIND_BY_ID_QUERY = "SELECT * FROM users WHERE id = ?";
@@ -56,36 +53,55 @@ private static final String GET_FRIENDS_QUERY = """
 			"SELECT COUNT(*) FROM friends WHERE user_id = ? AND friend_id = ?";
 	private static final String UPDATE_STATUS_QUERY =
 			"UPDATE friends SET statu = true WHERE user_id = ? AND friend_id = ?";
+	private static final String FIND_ALL_FRIENDS_OBJECTS = """
+			SELECT u.id, u.email, u.login, u.username, u.birthday
+			FROM users u 
+			JOIN friends f ON u.id = f.friend_id 
+			WHERE f.user_id = ?
+			""";
+	private static final String DEL_FRIEND_QUERY = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
+
 	public UserDbStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
 		super(jdbc, mapper);
 	}
 
 	@Override
-	public List<User> getFriends(long userId) {
-		// Выполняем запрос с вашим userRowMapper
-		return jdbc.query(GET_FRIENDS_QUERY, mapper, userId);
+	public void delFriendLink(Long userId, Long friendId) {
+		jdbc.update(DEL_FRIEND_QUERY, userId, friendId);
 	}
 
-	public void addFriendLink(long userId, long friendId) {
-		// Проверяем, подавал ли уже друг заявку нам (проверка взаимности)
-		Integer count = jdbc.queryForObject(CHECK_REVERSE_LINK, Integer.class, friendId, userId);
+	@Override
+	public List<User> getFriends(long userId) {
+		List<User> friends = findMany(FIND_ALL_FRIENDS_OBJECTS, userId);
+		friends.forEach(this::loadFriends);
+		return friends;
+		// Выполняем запрос с вашим userRowMapper
+//		return jdbc.query(GET_FRIENDS_QUERY, mapper, userId);
+	}
 
-		if (count != null && count > 0) {
-			// Заявка от друга уже есть -> делаем дружбу взаимной (status = true)
-			// Обновляем статус у друга
-			jdbc.update(UPDATE_STATUS, friendId, userId);
-
-			// Создаем свою запись сразу со статусом true (чтобы оба видели друг друга в друзьях)
-			jdbc.update(INSERT_FRIEND, userId, friendId, true);
-		} else {
-			// Односторонняя заявка -> сохраняем со статусом false
-			jdbc.update(INSERT_FRIEND, userId, friendId, false);
-		}
+	public void addFriendLink(Long userId, Long friendId) {
+//		jdbc.update(INSERT_FRIEND, userId, friendId, true);
+//		 Проверяем, подавал ли уже друг заявку нам (проверка взаимности)
+		jdbc.update(INSERT_FRIEND, userId, friendId, false);
+//		Integer count = jdbc.queryForObject(CHECK_REVERSE_LINK, Integer.class, userId, friendId);
+//
+//		if (count != null && count > 0) {
+//			// Заявка от друга уже есть -> делаем дружбу взаимной (status = true)
+//			// Обновляем статус у друга
+//			jdbc.update(UPDATE_STATUS, friendId, userId);
+//
+//			// Создаем свою запись сразу со статусом true (чтобы оба видели друг друга в друзьях)
+//			jdbc.update(INSERT_FRIEND, userId, friendId, true);
+//		} else {
+//			// Односторонняя заявка -> сохраняем со статусом false
+//			jdbc.update(INSERT_FRIEND, userId, friendId, false);
+//		}
 	}
 
 //	public void addFriendLink(long id, long friendId) {
-////		jdbc.update(ADD_FRIEND_QUERY, id, friendId, true);
-////		jdbc.update(ADD_FRIEND_QUERY, friendId, id, true);
+
+	/// /		jdbc.update(ADD_FRIEND_QUERY, id, friendId, true);
+	/// /		jdbc.update(ADD_FRIEND_QUERY, friendId, id, true);
 //		jdbc.update(ADD_FRIEND_QUERY, id, friendId, false);
 //	}
 
@@ -102,7 +118,6 @@ private static final String GET_FRIENDS_QUERY = """
 //			jdbc.update(ADD_FRIEND_QUERY, id, friendId, false);
 //		}
 //	}
-
 	@Override
 	public List<User> findAll() {
 		List<User> users = findMany(FIND_ALL_QUERY);
@@ -114,6 +129,13 @@ private static final String GET_FRIENDS_QUERY = """
 	}
 
 	@Override
+	public Optional<User> findById(long userId) {
+		Optional<User> userOptional = findOne(FIND_BY_ID_QUERY, userId);
+		userOptional.ifPresent(this::loadFriends);
+		return userOptional;
+	}
+
+	@Override
 	public Optional<User> findByEmail(String email) {
 //		return findOne(FIND_BY_EMAIL_QUERY, email);
 
@@ -122,6 +144,13 @@ private static final String GET_FRIENDS_QUERY = """
 //		loadFriendsOpt(userOptional);
 //		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, userOptional.get().getId());
 //		userOptional.get().setFriends(friendIds);
+//		return userOptional;
+		userOptional.ifPresent(this::loadFriends);
+//		userOptional.ifPresent(user -> {
+//			List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
+//			user.setFriends(new ArrayList<>(friendIds));
+//		});
+
 		return userOptional;
 	}
 
@@ -131,20 +160,12 @@ private static final String GET_FRIENDS_QUERY = """
 		user.get().setFriends(friendIds);
 	}
 
-	@Override
-	public Optional<User> findById(long userId) {
-		return findOne(FIND_BY_ID_QUERY, userId);
-
-//		Optional<User> userOptional = findOne(FIND_BY_ID_QUERY, userId);
-//		return loadFriendsIfPresent(userOptional);
-	}
 
 	public void loadFriends(User user) {
 		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
 //		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
 		user.setFriends(friendIds);
 	}
-
 
 
 	//	private void loadFriends(User user) {
@@ -189,7 +210,6 @@ private static final String GET_FRIENDS_QUERY = """
 	}
 
 
-
 	@Override
 	public User create(User user) {
 		long id = insert(
@@ -205,17 +225,6 @@ private static final String GET_FRIENDS_QUERY = """
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
 //	public Optional<User> findById(long userId) {
 //		String query = "SELECT * FROM users WHERE id = ?";
 //		try {
@@ -227,17 +236,11 @@ private static final String GET_FRIENDS_QUERY = """
 //	}
 
 
-
-
-
 	@Override
 	public Map<Long, User> getUsers() {
 		Collection<User> allUsers = findAll();
 		return allUsers.stream().collect(Collectors.toMap(User::getId, user -> user));
 	}
-
-
-
 
 
 	private Optional<User> loadFriendsIfPresent(Optional<User> userOptional) {

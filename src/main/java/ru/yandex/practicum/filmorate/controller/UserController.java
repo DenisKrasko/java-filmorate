@@ -21,6 +21,12 @@ import java.util.List;
 public class UserController {
 	private final UserService userService;
 
+	@DeleteMapping("/{id}/friends/{friendId}")
+	public void delFriend(@PathVariable("id") long id,
+						  @PathVariable("friendId") long friendId) {
+		userService.delFriend(id, friendId);
+	}
+
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping("/{id}/friends/{friendId}")
 	public UserDto addFriend(@PathVariable("id") long id,
@@ -92,11 +98,7 @@ public class UserController {
 
 
 
-	@DeleteMapping("/{id}/friends/{friendId}")
-	public void delFriend(@PathVariable("id") long id,
-						  @PathVariable("friendId") long friendId) {
-		userService.delFriend(id, friendId);
-	}
+
 
 
 

@@ -145,7 +145,5 @@ public abstract class InMemoryUserStorage implements UserStorage {
 
 	}
 
-	@Override
-	public void addFriendLink(long id, long friendId) {
-	}
+
 }

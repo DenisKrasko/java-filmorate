@@ -12,11 +12,11 @@ import java.util.List;
 
 
 public interface UserService {
-	UserDto addFriend(long id, long friendId);
+	UserDto addFriend(Long id, Long friendId);
 
 	void delFriend(long id, long friendId);
 
-	List<UserDto> getFriends(long id);
+	List<UserDto> getFriends(Long id);
 
 	List<User> getSharedFriends(long id, long otherId);
 

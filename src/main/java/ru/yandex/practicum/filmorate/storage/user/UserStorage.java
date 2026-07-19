@@ -9,9 +9,10 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface UserStorage {
+	void delFriendLink(Long userId, Long friendId);
 	List<User> getFriends(long userId);
 	void loadFriends(User user);
-	void addFriendLink(long id, long friendId);
+	void addFriendLink(Long id, Long friendId);
 	Collection<User> findAll(); //++++
 
 	User create(User user); //++++
