@@ -26,6 +26,43 @@ public class InstanceUserService implements UserService {
 	}
 
 	@Override
+	public List<UserDto> getFriends(long id) {
+		if (!userStorage.getUsers().containsKey(id)) {
+			throw new NotFoundException("Пользователь с id = " + id + ", друзей которого нужно получить, не найден");
+		}
+		return userStorage.getFriends(id).stream()
+				.map(UserMapper::mapToUserDto)
+				.collect(Collectors.toList());
+//		ArrayList<User> arrayList = new ArrayList<>();
+//		User user = userStorage.getUsers().get(id);
+//		for (long id2 : user.getFriends()) {
+//			arrayList.add(userStorage.getUsers().get(id2));
+//		}
+//		return arrayList;
+	}
+
+	@Override
+	public UserDto addFriend(long id, long friendId) {
+		User user = userStorage.findById(id).
+				orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + ", для которого нужно добавить друга, не найден"));
+		User friend = userStorage.findById(friendId).
+				orElseThrow(() -> new NotFoundException("Пользователь с id = " + friendId + ", которого вы хотите добавить в друзья, не найден"));
+		userStorage.addFriendLink(id, friendId);
+		return UserMapper.mapToUserDto(user);
+
+
+
+//		user.addFriend(friendId);
+//		friend.addFriend(id);
+//		userStorage.addFriendLink(id, friendId);
+//		userStorage.loadFriends(user);
+//		userStorage.loadFriends(friend);
+//		return UserMapper.mapToUserDto(user);
+	}
+
+
+
+	@Override
 	public UserDto createUser(NewUserRequest request) {
 		if (request.getEmail() == null || request.getEmail().isEmpty()) {
 			throw new ConditionsNotMetException("Имейл должен быть указан");
@@ -105,24 +142,7 @@ public class InstanceUserService implements UserService {
 
 
 
-	@Override
-	public UserDto addFriend(long id, long friendId) {
-		User user = userStorage.findById(id).
-				orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + ", для которого нужно добавить друга, не найден"));
-		User friend = userStorage.findById(friendId).
-				orElseThrow(() -> new NotFoundException("Пользователь с id = " + friendId + ", которого вы хотите добавить в друзья, не найден"));
-		userStorage.addFriendLink(id, friendId);
-		return UserMapper.mapToUserDto(user);
 
-
-
-//		user.addFriend(friendId);
-//		friend.addFriend(id);
-//		userStorage.addFriendLink(id, friendId);
-//		userStorage.loadFriends(user);
-//		userStorage.loadFriends(friend);
-//		return UserMapper.mapToUserDto(user);
-	}
 
 	@Override
 	public void delFriend(long id, long friendId) {
@@ -138,21 +158,7 @@ public class InstanceUserService implements UserService {
 		friend.delFriend(id);
 	}
 
-	@Override
-	public List<UserDto> getFriends(long id) {
-		if (!userStorage.getUsers().containsKey(id)) {
-			throw new NotFoundException("Пользователь с id = " + id + ", друзей которого нужно получить, не найден");
-		}
-		return userStorage.getFriends(id).stream()
-				.map(UserMapper::mapToUserDto)
-				.collect(Collectors.toList());
-//		ArrayList<User> arrayList = new ArrayList<>();
-//		User user = userStorage.getUsers().get(id);
-//		for (long id2 : user.getFriends()) {
-//			arrayList.add(userStorage.getUsers().get(id2));
-//		}
-//		return arrayList;
-	}
+
 
 	@Override
 	public List<User> getSharedFriends(long id, long otherId) {

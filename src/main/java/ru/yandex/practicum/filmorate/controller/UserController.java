@@ -21,6 +21,19 @@ import java.util.List;
 public class UserController {
 	private final UserService userService;
 
+	@ResponseStatus(HttpStatus.OK)
+	@PutMapping("/{id}/friends/{friendId}")
+	public UserDto addFriend(@PathVariable("id") long id,
+							 @PathVariable("friendId") long friendId) {
+		return userService.addFriend(id, friendId);
+	}
+
+
+	@GetMapping("/{id}/friends")
+	public List<UserDto> getFriends(@PathVariable("id") long id) {
+		return userService.getFriends(id);
+	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public UserDto createUser(@Valid @RequestBody NewUserRequest userRequest) {
@@ -49,12 +62,7 @@ public class UserController {
 		return userService.updateUser(userId, request);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
-	@PutMapping("/{id}/friends/{friendId}")
-	public UserDto addFriend(@PathVariable("id") long id,
-						  @PathVariable("friendId") long friendId) {
-		return userService.addFriend(id, friendId);
-	}
+
 
 //	@PostMapping
 //	public User create(@Valid @RequestBody User user) {
@@ -90,10 +98,7 @@ public class UserController {
 		userService.delFriend(id, friendId);
 	}
 
-	@GetMapping("/{id}/friends")
-	public List<UserDto> getFriends(@PathVariable("id") long id) {
-		return userService.getFriends(id);
-	}
+
 
 	@GetMapping("/{id}/friends/common/{otherId}")
 	public List<User> getSharedFriends(@PathVariable("id") long id,

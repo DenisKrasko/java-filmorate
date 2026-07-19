@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class UserDto {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	private long id;
+	private Long id;
 	private String name;
 	private String email;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)

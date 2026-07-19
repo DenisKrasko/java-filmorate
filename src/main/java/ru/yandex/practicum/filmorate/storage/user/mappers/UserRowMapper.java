@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+
 @Component
 public class UserRowMapper implements RowMapper<User> {
 	@Override
@@ -23,6 +24,7 @@ public class UserRowMapper implements RowMapper<User> {
 		Timestamp birthdayTimestamp = resultSet.getTimestamp("birthday");
 
 		user.setBirthday(birthdayTimestamp.toLocalDateTime().toLocalDate());
+
 		return user;
 	}
 

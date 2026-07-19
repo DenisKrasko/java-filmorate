@@ -29,7 +29,7 @@ private static final String GET_FRIENDS_QUERY = """
         SELECT u.id, u.email, u.login, u.name, u.birthday
         FROM users u
         JOIN friends f ON u.id = f.friend_id
-        WHERE f.user_id = ?
+        WHERE f.user_id = ? AND f.status = true
         """;
 	private static final String FIND_ALL_QUERY = "SELECT * FROM users";
 	private static final String FIND_BY_EMAIL_QUERY = "SELECT * FROM users WHERE email = ?";
@@ -110,22 +110,47 @@ private static final String GET_FRIENDS_QUERY = """
 
 //		String query = "SELECT * FROM users";
 //		return jdbc.query(query, mapper);
-		return findMany(FIND_ALL_QUERY);
+		return users;
 	}
 
 	@Override
 	public Optional<User> findByEmail(String email) {
-		return findOne(FIND_BY_EMAIL_QUERY, email);
-//		Optional<User> userOptional = findOne(FIND_BY_EMAIL_QUERY, email);
+//		return findOne(FIND_BY_EMAIL_QUERY, email);
+
+		Optional<User> userOptional = findOne(FIND_BY_EMAIL_QUERY, email);
 //		return loadFriendsIfPresent(userOptional);
+//		loadFriendsOpt(userOptional);
+//		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, userOptional.get().getId());
+//		userOptional.get().setFriends(friendIds);
+		return userOptional;
+	}
+
+	public void loadFriendsOpt(Optional<User> user) {
+		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.get().getId());
+//		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
+		user.get().setFriends(friendIds);
 	}
 
 	@Override
 	public Optional<User> findById(long userId) {
 		return findOne(FIND_BY_ID_QUERY, userId);
+
 //		Optional<User> userOptional = findOne(FIND_BY_ID_QUERY, userId);
 //		return loadFriendsIfPresent(userOptional);
 	}
+
+	public void loadFriends(User user) {
+		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
+//		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
+		user.setFriends(friendIds);
+	}
+
+
+
+	//	private void loadFriends(User user) {
+//		List<Long> friendIds = jdbc.query(FIND_FRIENDS, (rs, rowNum) -> rs.getLong("friend_id"), user.getId());
+//		user.setFriends(friendIds);
+//	}
 //	public Optional<User> findByEmail(String email) {
 //		String query = "SELECT * FROM users WHERE email = ?";
 //		try {
@@ -183,16 +208,7 @@ private static final String GET_FRIENDS_QUERY = """
 
 
 
-	public void loadFriends(User user) {
-		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
-//		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
-		user.setFriends(friendIds);
-	}
 
-	//	private void loadFriends(User user) {
-//		List<Long> friendIds = jdbc.query(FIND_FRIENDS, (rs, rowNum) -> rs.getLong("friend_id"), user.getId());
-//		user.setFriends(friendIds);
-//	}
 
 
 
