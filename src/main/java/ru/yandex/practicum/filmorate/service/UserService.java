@@ -16,7 +16,7 @@ public interface UserService {
 
 	void delFriend(long id, long friendId);
 
-	List<User> getFriends(long id);
+	List<UserDto> getFriends(long id);
 
 	List<User> getSharedFriends(long id, long otherId);
 

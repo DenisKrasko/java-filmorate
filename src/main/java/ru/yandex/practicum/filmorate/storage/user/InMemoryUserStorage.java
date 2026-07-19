@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class InMemoryUserStorage implements UserStorage {
+public abstract class InMemoryUserStorage implements UserStorage {
 	@Getter
 	private final Map<Long, User> users;
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface UserStorage {
+	List<User> getFriends(long userId);
 	void loadFriends(User user);
 	void addFriendLink(long id, long friendId);
 	Collection<User> findAll(); //++++

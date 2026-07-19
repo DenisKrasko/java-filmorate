@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -101,10 +102,10 @@ public class InMemoryFilmStorage implements FilmStorage {
 	}
 
 	@Override
-	public Film findFilmById(Long id) {
+	public Optional<Film> findFilmById(Long id) {
 		if (!films.containsKey(id)) {
 			throw new NotFoundException("Фильма с id " + id + " не найдено");
 		}
-		return films.get(id);
+		return Optional.ofNullable(films.get(id));
 	}
 }

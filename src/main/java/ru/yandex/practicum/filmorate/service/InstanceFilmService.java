@@ -25,7 +25,7 @@ public class InstanceFilmService implements FilmService {
 		if (!userStorage.getUsers().containsKey(userId)) {
 			throw new NotFoundException("Пользователь с id = " + userId + ", который ставит лайк фильму, не найден");
 		}
-		filmStorage.findFilmById(filmId).addLike(userId);
+		filmStorage.findFilmById(filmId).get().addLike(userId);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class InstanceFilmService implements FilmService {
 		if (!filmStorage.getFilms().get(filmId).getLikes().contains(userId)) {
 			throw new NotFoundException("В фильме с id = " + userId + " нету лайка от пользователя с id = " + userId);
 		}
-		filmStorage.findFilmById(filmId).delLike(userId);
+		filmStorage.findFilmById(filmId).get().delLike(userId);
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class InstanceFilmService implements FilmService {
 
 	@Override
 	public Film findFilmById(Long id) {
-		return filmStorage.findFilmById(id);
+		return filmStorage.findFilmById(id).get();
 	}
 
 	@Override

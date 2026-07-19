@@ -1,6 +1,6 @@
 # java-filmorate
 Template repository for Filmorate project.
-![DIAGRAMMA](diagram_new2.png)
+![DIAGRAMMA](d3.png)
 ## Блок фильмов
 film - центральная таблица каталога. Хранит название (name) и описание (description) фильмов.
 

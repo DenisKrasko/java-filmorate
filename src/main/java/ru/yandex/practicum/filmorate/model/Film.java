@@ -20,7 +20,7 @@ public class Film {
 	private String description;
 	@JsonFormat
 	private LocalDate releaseDate;
-	private int duration;
+	private Long duration;
 	private Set<Long> likes = new HashSet<>();
 	private Mpa mpa;
 	private List<Genre> genres;
