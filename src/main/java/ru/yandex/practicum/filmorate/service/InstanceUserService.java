@@ -106,7 +106,7 @@ public class InstanceUserService implements UserService {
 
 
 	@Override
-	public void addFriend(long id, long friendId) {
+	public UserDto addFriend(long id, long friendId) {
 		if (!userStorage.getUsers().containsKey(id)) {
 			throw new NotFoundException("Пользователь с id = " + id + ", для которого нужно добавить друга, не найден");
 		}
@@ -117,6 +117,10 @@ public class InstanceUserService implements UserService {
 		User friend = userStorage.getUsers().get(friendId);
 		user.addFriend(friendId);
 		friend.addFriend(id);
+		userStorage.addFriendLink(id, friendId);
+		userStorage.loadFriends(user);
+		userStorage.loadFriends(friend);
+		return UserMapper.mapToUserDto(user);
 	}
 
 	@Override

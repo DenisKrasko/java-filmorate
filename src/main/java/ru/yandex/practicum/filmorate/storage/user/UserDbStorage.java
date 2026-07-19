@@ -32,7 +32,9 @@ public class UserDbStorage extends BaseRepository<User> implements UserStorage {
 	private static final String INSERT_QUERY = "INSERT INTO users (email, login, username, birthday) VALUES (?, ?, ?, ?)";
 	private static final String UPDATE_QUERY = "UPDATE users SET username = ?, login = ?, birthday = ? WHERE id = ?";
 
+	private static final String ADD_FRIEND_QUERY = "INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)";
 	private static final String FIND_FRIENDS = "SELECT friend_id FROM friends WHERE user_id = ?";
+
 	private static final String CREATE_QUERY = "INSERT INTO users(email, login, username, birthday) VALUES (?, ?, ?, ?)";
 
 	public UserDbStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
@@ -115,6 +117,37 @@ public class UserDbStorage extends BaseRepository<User> implements UserStorage {
 		return user;
 	}
 
+	private static final String CHECK_REVERSE_LINK =
+			"SELECT COUNT(*) FROM friends WHERE user_id = ? AND friend_id = ?";
+	private static final String UPDATE_STATUS_QUERY =
+			"UPDATE friends SET statu = true WHERE user_id = ? AND friend_id = ?";
+
+//	public void addFriendLink(long id, long friendId) {
+//		// 1. Проверяем, отправлял ли уже friendId заявку к id
+//		Integer count = jdbc.queryForObject(CHECK_REVERSE_LINK, Integer.class, friendId, id);
+//
+//		if (count != null && count > 0) {
+//			// Если обратная заявка есть — делаем дружбу взаимной (status = true)
+//			jdbc.update(UPDATE_STATUS_QUERY, friendId, id); // обновляем старую заявку на true
+//			jdbc.update(ADD_FRIEND_QUERY, id, friendId, true); // создаем новую сразу с true
+//		} else {
+//			// Если обратной заявки нет — это первая односторонняя заявка (status = false)
+//			jdbc.update(ADD_FRIEND_QUERY, id, friendId, false);
+//		}
+//	}
+
+	public void loadFriends(User user) {
+		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
+//		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
+		user.setFriends(friendIds);
+	}
+
+	public void addFriendLink(long id, long friendId) {
+//		jdbc.update(ADD_FRIEND_QUERY, id, friendId, true);
+//		jdbc.update(ADD_FRIEND_QUERY, friendId, id, true);
+		jdbc.update(ADD_FRIEND_QUERY, id, friendId, false);
+	}
+
 
 
 
@@ -144,10 +177,7 @@ public class UserDbStorage extends BaseRepository<User> implements UserStorage {
 //		user.setFriends(friendIds);
 //	}
 
-	private void loadFriends(User user) {
-		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
-		user.setFriends(friendIds);
-	}
+
 
 	private Optional<User> loadFriendsIfPresent(Optional<User> userOptional) {
 		User user = userOptional.orElseThrow(() -> new NotFoundException("Пользователь не найден"));

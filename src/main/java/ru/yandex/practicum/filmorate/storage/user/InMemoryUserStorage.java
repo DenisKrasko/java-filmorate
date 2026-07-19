@@ -23,6 +23,8 @@ public class InMemoryUserStorage implements UserStorage {
 	private final Map<Long, User> users;
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
+
+
 	@Override
 	public Collection<User> findAll() {
 		return users.values();
@@ -136,5 +138,14 @@ public class InMemoryUserStorage implements UserStorage {
 	@Override
 	public User save(User user) {
 		return null;
+	}
+
+	@Override
+	public void loadFriends(User user) {
+
+	}
+
+	@Override
+	public void addFriendLink(long id, long friendId) {
 	}
 }

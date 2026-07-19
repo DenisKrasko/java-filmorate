@@ -49,6 +49,13 @@ public class UserController {
 		return userService.updateUser(userId, request);
 	}
 
+	@ResponseStatus(HttpStatus.OK)
+	@PutMapping("/{id}/friends/{friendId}")
+	public UserDto addFriend(@PathVariable("id") long id,
+						  @PathVariable("friendId") long friendId) {
+		return userService.addFriend(id, friendId);
+	}
+
 //	@PostMapping
 //	public User create(@Valid @RequestBody User user) {
 //		return userService.create(user);
@@ -75,12 +82,7 @@ public class UserController {
 		return userService.findUserById(id);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
-	@PutMapping("/{id}/friends/{friendId}")
-	public void addFriend(@PathVariable("id") long id,
-						  @PathVariable("friendId") long friendId) {
-		userService.addFriend(id, friendId);
-	}
+
 
 	@DeleteMapping("/{id}/friends/{friendId}")
 	public void delFriend(@PathVariable("id") long id,
