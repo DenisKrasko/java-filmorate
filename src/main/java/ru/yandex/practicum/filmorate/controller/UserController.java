@@ -21,6 +21,12 @@ import java.util.List;
 public class UserController {
 	private final UserService userService;
 
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public UserDto createUser(@Valid @RequestBody NewUserRequest userRequest) {
+		return userService.createUser(userRequest);
+	}
+
 	@DeleteMapping("/{id}/friends/{friendId}")
 	public void delFriend(@PathVariable("id") long id,
 						  @PathVariable("friendId") long friendId) {
@@ -40,11 +46,7 @@ public class UserController {
 		return userService.getFriends(id);
 	}
 
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public UserDto createUser(@Valid @RequestBody NewUserRequest userRequest) {
-		return userService.createUser(userRequest);
-	}
+
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)

@@ -5,9 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Film.
@@ -21,9 +19,9 @@ public class Film {
 	@JsonFormat
 	private LocalDate releaseDate;
 	private Long duration;
-	private Set<Long> likes = new HashSet<>();
+	private List<Long> likes = new ArrayList<>();
 	private Mpa mpa;
-	private List<Genre> genres;
+	private Set<Genre> genres = new LinkedHashSet<>();
 
 	public void addLike(long userId) {
 		likes.add(userId);

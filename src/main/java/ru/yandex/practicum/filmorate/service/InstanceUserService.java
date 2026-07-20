@@ -26,6 +26,29 @@ public class InstanceUserService implements UserService {
 	}
 
 	@Override
+	public UserDto createUser(NewUserRequest request) {
+		if (request.getEmail() == null || request.getEmail().isEmpty()) {
+			throw new ConditionsNotMetException("Имейл должен быть указан");
+		}
+		if (request.getLogin() == null || request.getLogin().isBlank() || request.getLogin().contains(" ")) {
+			throw new ValidationException("Логин не может быть пустым или содержать пробелы");
+		}
+		if (!request.getEmail().contains("@")) {
+			throw new ValidationException("Имейл должен содержать символ @");
+		}
+		if (request.getBirthday() != null && request.getBirthday().isAfter(LocalDate.now())) {
+			throw new ValidationException("Дата рождения не может быть в будущем");
+		}
+		Optional<User> alreadyExistUser = userStorage.findByEmail(request.getEmail());
+		if (alreadyExistUser.isPresent()) {
+			throw new DuplicatedDataException("Данный имейл уже используется");
+		}
+		User user = UserMapper.mapToUser(request);
+		user = userStorage.save(user);
+		return UserMapper.mapToUserDto(user);
+	}
+
+	@Override
 	public void delFriend(long id, long friendId) {
 		userStorage.findById(id)
 				.orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + " не найден"));
@@ -67,37 +90,6 @@ public class InstanceUserService implements UserService {
 		return UserMapper.mapToUserDto(updateUser);
 	}
 
-
-
-	@Override
-	public UserDto createUser(NewUserRequest request) {
-		if (request.getEmail() == null || request.getEmail().isEmpty()) {
-			throw new ConditionsNotMetException("Имейл должен быть указан");
-		}
-
-		if (request.getLogin() == null || request.getLogin().isBlank() || request.getLogin().contains(" ")) {
-			throw new ValidationException("Логин не может быть пустым или содержать пробелы");
-		}
-
-		if (!request.getEmail().contains("@")) {
-			throw new ValidationException("Имейл должен содержать символ @");
-		}
-
-		if (request.getBirthday() != null && request.getBirthday().isAfter(LocalDate.now())) {
-			throw new ValidationException("Дата рождения не может быть в будущем");
-		}
-
-		Optional<User> alreadyExistUser = userStorage.findByEmail(request.getEmail());
-		if (alreadyExistUser.isPresent()) {
-			throw new DuplicatedDataException("Данный имейл уже используется");
-		}
-
-		User user = UserMapper.mapToUser(request);
-
-		user = userStorage.save(user);
-
-		return UserMapper.mapToUserDto(user);
-	}
 
 	public UserDto getUserById(long userId) {
 		return userStorage.findById(userId)

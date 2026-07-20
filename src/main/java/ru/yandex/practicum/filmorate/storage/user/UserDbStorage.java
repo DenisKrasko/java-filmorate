@@ -1,7 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,9 +8,10 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.BaseRepository;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -65,6 +64,32 @@ public class UserDbStorage extends BaseRepository<User> implements UserStorage {
 		super(jdbc, mapper);
 	}
 
+	@Override
+	public Optional<User> findById(long userId) {
+		Optional<User> userOptional = findOne(FIND_BY_ID_QUERY, userId);
+		userOptional.ifPresent(this::loadFriends);
+		return userOptional;
+	}
+
+	@Override
+	public Optional<User> findByEmail(String email) {
+		Optional<User> userOptional = findOne(FIND_BY_EMAIL_QUERY, email);
+		userOptional.ifPresent(this::loadFriends);
+		return userOptional;
+	}
+
+	@Override
+	public User save(User user) {
+		long id = insert(
+				INSERT_QUERY,
+				user.getEmail(),
+				user.getLogin(),
+				user.getName(),
+				user.getBirthday()
+		);
+		user.setId(id);
+		return user;
+	}
 	@Override
 	public void delFriendLink(Long userId, Long friendId) {
 		jdbc.update(DEL_FRIEND_QUERY, userId, friendId);
@@ -128,31 +153,7 @@ public class UserDbStorage extends BaseRepository<User> implements UserStorage {
 		return users;
 	}
 
-	@Override
-	public Optional<User> findById(long userId) {
-		Optional<User> userOptional = findOne(FIND_BY_ID_QUERY, userId);
-		userOptional.ifPresent(this::loadFriends);
-		return userOptional;
-	}
 
-	@Override
-	public Optional<User> findByEmail(String email) {
-//		return findOne(FIND_BY_EMAIL_QUERY, email);
-
-		Optional<User> userOptional = findOne(FIND_BY_EMAIL_QUERY, email);
-//		return loadFriendsIfPresent(userOptional);
-//		loadFriendsOpt(userOptional);
-//		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, userOptional.get().getId());
-//		userOptional.get().setFriends(friendIds);
-//		return userOptional;
-		userOptional.ifPresent(this::loadFriends);
-//		userOptional.ifPresent(user -> {
-//			List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.getId());
-//			user.setFriends(new ArrayList<>(friendIds));
-//		});
-
-		return userOptional;
-	}
 
 	public void loadFriendsOpt(Optional<User> user) {
 		List<Long> friendIds = jdbc.queryForList(FIND_FRIENDS, Long.class, user.get().getId());
@@ -182,20 +183,7 @@ public class UserDbStorage extends BaseRepository<User> implements UserStorage {
 //		}
 //	}
 
-	@Override
-	public User save(User user) {
-		long id = insert(
-				INSERT_QUERY,
-				user.getEmail(),
-				user.getLogin(),
-				user.getName(),
-				user.getBirthday()
-//				Timestamp.from(user.getBirthday())
-//				java.sql.Date.valueOf(user.getBirthday())
-		);
-		user.setId(id);
-		return user;
-	}
+
 
 	@Override
 	public User update(User user) {

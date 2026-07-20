@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class InMemoryFilmStorage implements FilmStorage {
+public abstract class InMemoryFilmStorage implements FilmStorage {
 	@Getter
 	private final Map<Long, Film> films = new HashMap<>();
 	private static final Logger log = LoggerFactory.getLogger(FilmController.class);
@@ -29,12 +29,10 @@ public class InMemoryFilmStorage implements FilmStorage {
 		return films.values();
 	}
 
-	@Override
 	public Film create(Film film) {
 		return saveFilm(film);
 	}
 
-	@Override
 	public Film update(Film newFilm) {
 		return updateFilm(newFilm);
 	}

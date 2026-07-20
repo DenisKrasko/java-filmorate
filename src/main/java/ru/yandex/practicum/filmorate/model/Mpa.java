@@ -1,9 +1,13 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 @Data
-public class Mpa {
+@EqualsAndHashCode
+public class Mpa implements Serializable {
 	private Long id;
-	private String rating_MPA;
+	private String name;
 }
