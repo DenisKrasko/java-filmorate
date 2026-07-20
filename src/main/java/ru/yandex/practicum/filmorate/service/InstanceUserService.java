@@ -54,25 +54,13 @@ public class InstanceUserService implements UserService {
 				.orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + " не найден"));
 		userStorage.findById(friendId)
 				.orElseThrow(() -> new NotFoundException("Пользователь с id = " + friendId + " не найден"));
-//		if (!userStorage.getUsers().containsKey(id)) {
-//			throw new NotFoundException("Пользователь с id = " + id + ", для которого нужно добавить друга, не найден");
-//		}
-//		if (!userStorage.getUsers().containsKey(friendId)) {
-//			throw new NotFoundException("Пользователь с id = " + friendId + ", которого вы хотите добавить в друзья, не найден");
-//		}
 		userStorage.delFriendLink(id, friendId);
-//		User user = userStorage.getUsers().get(id);
-//		User friend = userStorage.getUsers().get(friendId);
-//		user.delFriend(friendId);
-//		friend.delFriend(id);
 	}
 
 	@Override
 	public List<UserDto> getFriends(Long id) {
-		// Проверяем существование пользователя
 		userStorage.findById(id)
 				.orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + " не найден"));
-
 		return userStorage.getFriends(id).stream()
 				.map(UserMapper::mapToUserDto)
 				.collect(Collectors.toList());
@@ -89,7 +77,6 @@ public class InstanceUserService implements UserService {
 				.orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + "не найден"));
 		return UserMapper.mapToUserDto(updateUser);
 	}
-
 
 	public UserDto getUserById(long userId) {
 		return userStorage.findById(userId)
@@ -110,7 +97,6 @@ public class InstanceUserService implements UserService {
 				.orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 		updatedUser = userStorage.update(updatedUser);
 		return UserMapper.mapToUserDto(updatedUser);
-//		return userStorage.update(newUser);
 	}
 
 	public UserDto updateUser(long userId, UpdateUserRequest request) {
@@ -146,10 +132,5 @@ public class InstanceUserService implements UserService {
 	@Override
 	public User findUserById(Long id) {
 		return userStorage.findById(id).orElseThrow(() -> new NotFoundException("Пользователь c id " + id + " не найден"));
-	}
-
-	@Override
-	public UserStorage getUserStorage() {
-		return userStorage;
 	}
 }

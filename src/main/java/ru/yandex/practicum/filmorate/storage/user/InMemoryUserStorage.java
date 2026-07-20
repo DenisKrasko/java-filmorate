@@ -23,8 +23,6 @@ public abstract class InMemoryUserStorage implements UserStorage {
 	private final Map<Long, User> users;
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-
-
 	@Override
 	public Collection<User> findAll() {
 		return users.values();
@@ -92,9 +90,6 @@ public abstract class InMemoryUserStorage implements UserStorage {
 		return users.get(user.getId());
 	}
 
-	/**
-	 * Вспомогательный метод для генерации идентификатора нового поста
-	 */
 	private long getNextId() {
 		long currentMaxId = users.keySet()
 				.stream()
@@ -142,8 +137,5 @@ public abstract class InMemoryUserStorage implements UserStorage {
 
 	@Override
 	public void loadFriends(User user) {
-
 	}
-
-
 }

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +19,11 @@ public class MpaController {
 
 	@GetMapping
 	public Collection<Mpa> findAll() {
-		return filmService.findAllMpa(); // Убедитесь, что такой метод есть в вашем сервисе/сторидже
+		return filmService.findAllMpa();
 	}
 
 	@GetMapping("/{id}")
 	public Mpa findById(@PathVariable Long id) {
-		return filmService.findMpaById(id); // Метод должен возвращать MPA или кидать NotFoundException (404)
+		return filmService.findMpaById(id);
 	}
 }

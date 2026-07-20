@@ -16,18 +16,17 @@ public interface UserStorage {
 
 	void addFriendLink(Long id, Long friendId);
 
-	Collection<User> findAll(); //++++
+	Collection<User> findAll();
 
-	User create(User user); //++++
+	User create(User user);
 
-	Optional<User> findByEmail(String email); //++++
+	Optional<User> findByEmail(String email);
 
-	Optional<User> findById(long userId); //++++
+	Optional<User> findById(long userId);
 
-	User update(User newUser); //+++
+	User update(User newUser);
 
 	Map<Long, User> getUsers();
 
 	User save(User user);
-
 }

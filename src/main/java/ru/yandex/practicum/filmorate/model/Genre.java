@@ -13,5 +13,6 @@ public class Genre implements Serializable {
 	private Long id;
 	private String name;
 
-	public Genre() {}
+	public Genre() {
+	}
 }

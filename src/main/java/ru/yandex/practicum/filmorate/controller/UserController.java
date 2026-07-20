@@ -2,8 +2,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.NewUserRequest;
@@ -12,7 +10,6 @@ import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -40,17 +37,14 @@ public class UserController {
 		return userService.addFriend(id, friendId);
 	}
 
-
 	@GetMapping("/{id}/friends")
 	public List<UserDto> getFriends(@PathVariable("id") long id) {
 		return userService.getFriends(id);
 	}
 
-
-
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<UserDto> getUsers(){
+	public List<UserDto> getUsers() {
 		return userService.getUsers();
 	}
 
@@ -61,7 +55,7 @@ public class UserController {
 	}
 
 	@PutMapping
-	public UserDto updateUser(@RequestBody UpdateUserRequest request) { // или тот класс запроса обновления, который у вас используется
+	public UserDto updateUser(@RequestBody UpdateUserRequest request) {
 		return userService.updateUser(request);
 	}
 
@@ -70,39 +64,11 @@ public class UserController {
 		return userService.updateUser(userId, request);
 	}
 
-
-
-//	@PostMapping
-//	public User create(@Valid @RequestBody User user) {
-//		return userService.create(user);
-//	}
-
-
-
-
-
-
-
-//	@GetMapping
-//	@ResponseStatus
-//	public Collection<User> findAll() {
-//		return userService.findAll();
-//	}
-
-
-
-
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{id}")
 	public User getUser(@PathVariable("id") long id) {
 		return userService.findUserById(id);
 	}
-
-
-
-
-
-
 
 	@GetMapping("/{id}/friends/common/{otherId}")
 	public List<User> getSharedFriends(@PathVariable("id") long id,

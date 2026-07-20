@@ -2,12 +2,11 @@ package ru.yandex.practicum.filmorate.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.filmorate.dto.*;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
+import ru.yandex.practicum.filmorate.dto.UpdateFilmRequest;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
-
-import java.util.LinkedHashSet;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FilmMapper {
@@ -17,8 +16,6 @@ public class FilmMapper {
 		film.setDescription(request.getDescription());
 		film.setReleaseDate(request.getReleaseDate());
 		film.setDuration(request.getDuration());
-//		Mpa mpa = new Mpa();
-//		mpa.setId(request.getRating_MPA_id());
 		film.setMpa(request.getMpa());
 		if (request.getGenres() != null) {
 			film.setGenres(request.getGenres());
@@ -55,28 +52,19 @@ public class FilmMapper {
 		return film;
 	}
 
-	public static  Film mapToFilm(UpdateFilmRequest request) {
+	public static Film mapToFilm(UpdateFilmRequest request) {
 		Film film = new Film();
-		// 1. Обязательно сетим id, так как это запрос на обновление существующего фильма!
 		film.setId(request.getId());
-
-		// 2. Копируем все остальные базовые поля
 		film.setName(request.getName());
 		film.setDescription(request.getDescription());
 		film.setReleaseDate(request.getReleaseDate());
 		film.setDuration(request.getDuration());
-
-		// 3. Создаем и заполняем объект MPA
 		Mpa mpa = new Mpa();
 		mpa.setId(request.getRating_MPA_id());
 		film.setMpa(mpa);
-
-		// 4. Переносим жанры, если они переданы в запросе
 		if (request.getGenres() != null) {
 			film.setGenres(request.getGenres());
 		}
-
 		return film;
 	}
-
 }

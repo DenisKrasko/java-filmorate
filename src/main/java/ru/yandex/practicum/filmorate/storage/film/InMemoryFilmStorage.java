@@ -50,7 +50,6 @@ public abstract class InMemoryFilmStorage implements FilmStorage {
 			oldFilm.setName(newFilm.getName());
 			oldFilm.setDuration(newFilm.getDuration());
 			oldFilm.setReleaseDate(newFilm.getReleaseDate());
-
 			return oldFilm;
 		}
 		log.error("Фильм с id = {} не найден", newFilm.getId());
@@ -87,9 +86,6 @@ public abstract class InMemoryFilmStorage implements FilmStorage {
 		throw new ValidationException(message);
 	}
 
-	/**
-	 * Вспомогательный метод для генерации идентификатора нового поста
-	 */
 	private long getNextId() {
 		long currentMaxId = films.keySet()
 				.stream()

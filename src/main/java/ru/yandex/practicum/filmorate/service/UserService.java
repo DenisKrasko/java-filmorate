@@ -1,15 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.dto.NewUserRequest;
 import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.List;
-
 
 public interface UserService {
 	UserDto addFriend(Long id, Long friendId);
@@ -29,8 +26,6 @@ public interface UserService {
 	UserDto updateUser(long userId, UpdateUserRequest request);
 
 	User findUserById(Long id);
-
-	UserStorage getUserStorage();
 
 	List<UserDto> getUsers();
 

@@ -2,8 +2,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
@@ -30,8 +28,6 @@ public class FilmController {
 		return filmService.findAll();
 	}
 
-
-
 	@PutMapping
 	public FilmDto update(@Valid @RequestBody UpdateFilmRequest request) {
 		return filmService.update(request);
@@ -53,12 +49,6 @@ public class FilmController {
 	public List<FilmDto> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
 		return filmService.getPopularFilms(count);
 	}
-
-
-//	@GetMapping("/popular")
-//	public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") String count) {
-//		return filmService.getPopularFilms(Integer.valueOf(count));
-//	}
 
 	@GetMapping("/{id}")
 	public Film getFilm(@PathVariable("id") long id) {

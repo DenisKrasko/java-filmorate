@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class ErrorResponse {
-	@Getter@Setter
+	@Getter
+	@Setter
 	private String error;
 
 	public ErrorResponse(String error) {

@@ -11,7 +11,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/genres") // Важно: множественное число!
+@RequestMapping("/genres")
 @RequiredArgsConstructor
 public class GenreController {
 
