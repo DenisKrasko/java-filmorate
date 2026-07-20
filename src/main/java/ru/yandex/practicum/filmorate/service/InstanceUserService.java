@@ -68,10 +68,10 @@ public class InstanceUserService implements UserService {
 
 	@Override
 	public UserDto addFriend(Long id, Long friendId) {
-		User user = userStorage.findById(id).
-				orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + ", для которого нужно добавить друга, не найден"));
-		User friend = userStorage.findById(friendId).
-				orElseThrow(() -> new NotFoundException("Пользователь с id = " + friendId + ", которого вы хотите добавить в друзья, не найден"));
+		User user = userStorage.findById(id)
+				.orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + ", для которого нужно добавить друга, не найден"));
+		User friend = userStorage.findById(friendId)
+				.orElseThrow(() -> new NotFoundException("Пользователь с id = " + friendId + ", которого вы хотите добавить в друзья, не найден"));
 		userStorage.addFriendLink(id, friendId);
 		User updateUser = userStorage.findById(id)
 				.orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + "не найден"));
