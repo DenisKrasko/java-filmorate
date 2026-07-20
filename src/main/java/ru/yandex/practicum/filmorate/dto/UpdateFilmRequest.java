@@ -20,7 +20,7 @@ public class UpdateFilmRequest {
 	private LocalDate releaseDate;
 	private Set<Genre> genres = new LinkedHashSet<>();
 	@Setter
-	private Long rating_MPA_id;
+	private Long rating;
 
 
 	public boolean hasUsername() {
