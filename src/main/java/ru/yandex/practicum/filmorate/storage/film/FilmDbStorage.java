@@ -56,14 +56,14 @@ public class FilmDbStorage extends BaseRepository<Film> implements FilmStorage {
 			"ORDER BY g.id";
 	private static final String FIND_FILM_BY_ID_QUERY = """
 			SELECT f.id, f.name, f.description, f.release_date, f.duration, f.ratingid,
-			       m.rating 
-			FROM film f 
-			LEFT JOIN mpa m ON f.ratingid = m.id 
+			       m.rating
+			FROM film f
+			LEFT JOIN mpa m ON f.ratingid = m.id
 			WHERE f.id = ?
 			""";
 	private static final String FIND_BY_NAME_QUERY = "SELECT * FROM film WHERE name = ?";
 	private static final String INSERT_QUERY = """
-			INSERT INTO film (name, description, duration, release_date, ratingid) 
+			INSERT INTO film (name, description, duration, release_date, ratingid)
 			VALUES (?, ?, ?, ?, ?)
 			""";
 
