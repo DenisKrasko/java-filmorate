@@ -37,8 +37,8 @@ public class UserDbStorage extends BaseRepository<User> implements UserStorage {
 			"UPDATE friends SET statu = true WHERE user_id = ? AND friend_id = ?";
 	private static final String FIND_ALL_FRIENDS_OBJECTS = """
 			SELECT u.id, u.email, u.login, u.username, u.birthday
-			FROM users u 
-			JOIN friends f ON u.id = f.friend_id 
+			FROM users u
+			JOIN friends f ON u.id = f.friend_id
 			WHERE f.user_id = ?
 			""";
 	private static final String DEL_FRIEND_QUERY = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
