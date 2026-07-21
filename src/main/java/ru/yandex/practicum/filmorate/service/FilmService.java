@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
 import ru.yandex.practicum.filmorate.dto.FilmDto;
-import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
-import ru.yandex.practicum.filmorate.dto.UpdateFilmRequest;
+import ru.yandex.practicum.filmorate.dto.NewFilmRequestDto;
+import ru.yandex.practicum.filmorate.dto.UpdateFilmRequestDto;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -27,9 +27,9 @@ public interface FilmService {
 
 	Collection<Film> findAll();
 
-	FilmDto createFilm(NewFilmRequest filmRequest);
+	FilmDto createFilm(NewFilmRequestDto filmRequest);
 
-	FilmDto update(UpdateFilmRequest request);
+	FilmDto update(UpdateFilmRequestDto request);
 
 	Film findFilmById(Long id);
 }

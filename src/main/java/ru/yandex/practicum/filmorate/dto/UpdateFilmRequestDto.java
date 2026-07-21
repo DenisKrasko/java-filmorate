@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Getter
-public class UpdateFilmRequest {
+public class UpdateFilmRequestDto {
 	private Long id;
 	@Setter
 	private String name;

@@ -4,10 +4,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
-import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
-import ru.yandex.practicum.filmorate.dto.UpdateFilmRequest;
+import ru.yandex.practicum.filmorate.dto.NewFilmRequestDto;
+import ru.yandex.practicum.filmorate.dto.UpdateFilmRequestDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -15,7 +14,6 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,32 +54,19 @@ public class InstanceFilmService implements FilmService {
 	}
 
 	@Override
-	public FilmDto createFilm(NewFilmRequest request) {
-		validate(request);
+	public FilmDto createFilm(NewFilmRequestDto request) {
+		checkMpaAndGenresPage(request);
 		Film film = FilmMapper.mapToFilm(request);
 		Film savedFilm = filmStorage.save(film);
 		return FilmMapper.mapToFilmDto(savedFilm);
 	}
 
-	private void validate(NewFilmRequest request) {
+	private void checkMpaAndGenresPage(NewFilmRequestDto request) {
 		if (request.getMpa() != null) {
 			boolean mpaExists = filmStorage.checkMpaExists(request.getMpa().getId());
 			if (!mpaExists) {
 				throw new NotFoundException("Рейтинг MPA с id = " + request.getMpa().getId() + " не найден");
 			}
-		}
-		if (request.getName() == null || request.getName().isBlank()) {
-			throw new ValidationException("Название фильма не может быть пустым");
-		}
-		LocalDate cinemaBirthday = LocalDate.of(1895, 12, 28);
-		if (request.getReleaseDate() != null && request.getReleaseDate().isBefore(cinemaBirthday)) {
-			throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
-		}
-		if (request.getDescription() != null && request.getDescription().length() > 200) {
-			throw new ValidationException("Максимальная длина описания 200 символов");
-		}
-		if (request.getDuration() != null && request.getDuration() <= 0) {
-			throw new ValidationException("Продолжительность фильма должна быть положительной");
 		}
 		if (request.getGenres() != null && !request.getGenres().isEmpty()) {
 			for (Genre genre : request.getGenres()) {
@@ -117,7 +102,7 @@ public class InstanceFilmService implements FilmService {
 	}
 
 	@Override
-	public FilmDto update(UpdateFilmRequest request) {
+	public FilmDto update(UpdateFilmRequestDto request) {
 		filmStorage.findById(request.getId())
 				.orElseThrow(() -> new NotFoundException("Фильм с id = " + request.getId() + " не найден"));
 		Film film = FilmMapper.mapToFilm(request);

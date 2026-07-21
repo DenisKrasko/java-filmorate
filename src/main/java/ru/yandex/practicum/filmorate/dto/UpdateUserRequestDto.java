@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Getter
-public class UpdateUserRequest {
+public class UpdateUserRequestDto {
 	private Long id;
 	@Setter
 	private String name;

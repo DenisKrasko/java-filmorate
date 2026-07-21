@@ -2,18 +2,15 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dto.NewUserRequest;
-import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
+import ru.yandex.practicum.filmorate.dto.NewUserRequestDto;
+import ru.yandex.practicum.filmorate.dto.UpdateUserRequestDto;
 import ru.yandex.practicum.filmorate.dto.UserDto;
-import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.exception.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,19 +23,7 @@ public class InstanceUserService implements UserService {
 	}
 
 	@Override
-	public UserDto createUser(NewUserRequest request) {
-		if (request.getEmail() == null || request.getEmail().isEmpty()) {
-			throw new ConditionsNotMetException("Имейл должен быть указан");
-		}
-		if (request.getLogin() == null || request.getLogin().isBlank() || request.getLogin().contains(" ")) {
-			throw new ValidationException("Логин не может быть пустым или содержать пробелы");
-		}
-		if (!request.getEmail().contains("@")) {
-			throw new ValidationException("Имейл должен содержать символ @");
-		}
-		if (request.getBirthday() != null && request.getBirthday().isAfter(LocalDate.now())) {
-			throw new ValidationException("Дата рождения не может быть в будущем");
-		}
+	public UserDto createUser(NewUserRequestDto request) {
 		Optional<User> alreadyExistUser = userStorage.findByEmail(request.getEmail());
 		if (alreadyExistUser.isPresent()) {
 			throw new DuplicatedDataException("Данный имейл уже используется");
@@ -91,7 +76,7 @@ public class InstanceUserService implements UserService {
 				.collect(Collectors.toList());
 	}
 
-	public UserDto updateUser(UpdateUserRequest request) {
+	public UserDto updateUser(UpdateUserRequestDto request) {
 		User updatedUser = userStorage.findById(request.getId())
 				.map(user -> UserMapper.updateUserFields(user, request))
 				.orElseThrow(() -> new NotFoundException("Пользователь не найден"));
@@ -99,7 +84,7 @@ public class InstanceUserService implements UserService {
 		return UserMapper.mapToUserDto(updatedUser);
 	}
 
-	public UserDto updateUser(long userId, UpdateUserRequest request) {
+	public UserDto updateUser(long userId, UpdateUserRequestDto request) {
 		User updatedUser = userStorage.findById(userId)
 				.map(user -> UserMapper.updateUserFields(user, request))
 				.orElseThrow(() -> new NotFoundException("Пользователь не найден"));
@@ -108,7 +93,7 @@ public class InstanceUserService implements UserService {
 	}
 
 	@Override
-	public List<User> getSharedFriends(long id, long otherId) {
+	public List<UserDto> getSharedFriends(long id, long otherId) {
 		Map<Long, User> allUsers = userStorage.getUsers();
 		User user1 = allUsers.get(id);
 		User user2 = allUsers.get(otherId);
@@ -121,7 +106,9 @@ public class InstanceUserService implements UserService {
 				sharedFriends.add(allUsers.get(friendId));
 			}
 		}
-		return sharedFriends;
+		return sharedFriends.stream()
+				.map(UserMapper::mapToUserDto)
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -130,7 +117,8 @@ public class InstanceUserService implements UserService {
 	}
 
 	@Override
-	public User findUserById(Long id) {
-		return userStorage.findById(id).orElseThrow(() -> new NotFoundException("Пользователь c id " + id + " не найден"));
+	public UserDto findUserById(Long id) {
+		User user = userStorage.findById(id).orElseThrow(() -> new NotFoundException("Пользователь c id " + id + " не найден"));
+		return UserMapper.mapToUserDto(user);
 	}
 }

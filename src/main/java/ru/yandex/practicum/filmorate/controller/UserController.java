@@ -4,10 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.dto.NewUserRequest;
-import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
+import ru.yandex.practicum.filmorate.dto.NewUserRequestDto;
+import ru.yandex.practicum.filmorate.dto.UpdateUserRequestDto;
 import ru.yandex.practicum.filmorate.dto.UserDto;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public class UserController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserDto createUser(@Valid @RequestBody NewUserRequest userRequest) {
+	public UserDto createUser(@Valid @RequestBody NewUserRequestDto userRequest) {
 		return userService.createUser(userRequest);
 	}
 
@@ -55,23 +54,23 @@ public class UserController {
 	}
 
 	@PutMapping
-	public UserDto updateUser(@RequestBody UpdateUserRequest request) {
+	public UserDto updateUser(@RequestBody UpdateUserRequestDto request) {
 		return userService.updateUser(request);
 	}
 
 	@PutMapping("{userId}")
-	public UserDto updateUser(@PathVariable("userId") long userId, @RequestBody UpdateUserRequest request) {
+	public UserDto updateUser(@PathVariable("userId") long userId, @RequestBody UpdateUserRequestDto request) {
 		return userService.updateUser(userId, request);
 	}
 
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{id}")
-	public User getUser(@PathVariable("id") long id) {
+	public UserDto getUser(@PathVariable("id") long id) {
 		return userService.findUserById(id);
 	}
 
 	@GetMapping("/{id}/friends/common/{otherId}")
-	public List<User> getSharedFriends(@PathVariable("id") long id,
+	public List<UserDto> getSharedFriends(@PathVariable("id") long id,
 									   @PathVariable("otherId") long otherId) {
 		return userService.getSharedFriends(id, otherId);
 	}
