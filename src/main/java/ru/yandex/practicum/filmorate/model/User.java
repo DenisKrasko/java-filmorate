@@ -5,19 +5,19 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
+@EqualsAndHashCode(of = {"email"})
 public class User {
-	@EqualsAndHashCode.Exclude
 	private Long id;
 	private String email;
 	private String login;
 	private String name;
-	@JsonFormat
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthday;
-	private Set<Long> friends = new HashSet<>();
+	private List<Long> friends = new ArrayList<>();
 
 	public void addFriend(long id) {
 		friends.add(id);

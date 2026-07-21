@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.NewFilmRequestDto;
+import ru.yandex.practicum.filmorate.dto.UpdateFilmRequestDto;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -14,26 +16,25 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
-	private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 	private final FilmService filmService;
+
+	@PostMapping
+	public FilmDto createFilm(@Valid @RequestBody NewFilmRequestDto filmRequest) {
+		return filmService.createFilm(filmRequest);
+	}
 
 	@GetMapping
 	public Collection<Film> findAll() {
 		return filmService.findAll();
 	}
 
-	@PostMapping
-	public Film create(@RequestBody Film film) {
-		return filmService.create(film);
-	}
-
 	@PutMapping
-	public Film update(@RequestBody Film newFilm) {
-		return filmService.update(newFilm);
+	public FilmDto update(@Valid @RequestBody UpdateFilmRequestDto request) {
+		return filmService.update(request);
 	}
 
 	@PutMapping("/{id}/like/{userId}")
-	public void addLike(@PathVariable("id") long id,
+	public void addLike(@PathVariable("id") Long id,
 						@PathVariable(required = false, value = "userId") long userId) {
 		filmService.addLike(id, userId);
 	}
@@ -45,8 +46,8 @@ public class FilmController {
 	}
 
 	@GetMapping("/popular")
-	public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") String count) {
-		return filmService.getPopularFilms(Integer.valueOf(count));
+	public List<FilmDto> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
+		return filmService.getPopularFilms(count);
 	}
 
 	@GetMapping("/{id}")

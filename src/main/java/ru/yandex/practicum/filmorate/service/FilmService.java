@@ -1,29 +1,35 @@
 package ru.yandex.practicum.filmorate.service;
 
-import jakarta.validation.constraints.NotNull;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.NewFilmRequestDto;
+import ru.yandex.practicum.filmorate.dto.UpdateFilmRequestDto;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 public interface FilmService {
+	Collection<Genre> getAllGenres();
 
-	void addLike(long filmId, @NotNull(message = "вы не указали id пользователя который поставил лайк") long userId);
+	Genre getGenreById(int id);
+
+	Collection<Mpa> findAllMpa();
+
+	Mpa findMpaById(Long id);
+
+	List<FilmDto> getPopularFilms(int count);
+
+	void addLike(long filmId, long userId);
 
 	void delLike(long filmId, long userId);
 
-	List<Film> getPopularFilms(int count);
-
 	Collection<Film> findAll();
 
-	Film create(Film film);
+	FilmDto createFilm(NewFilmRequestDto filmRequest);
 
-	Film update(Film newFilm);
+	FilmDto update(UpdateFilmRequestDto request);
 
 	Film findFilmById(Long id);
-
-	FilmStorage getFilmStorage();
-
-	UserStorage getUserStorage();
 }

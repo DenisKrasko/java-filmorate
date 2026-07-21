@@ -15,10 +15,11 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class InMemoryFilmStorage implements FilmStorage {
+public abstract class InMemoryFilmStorage implements FilmStorage {
 	@Getter
 	private final Map<Long, Film> films = new HashMap<>();
 	private static final Logger log = LoggerFactory.getLogger(FilmController.class);
@@ -28,12 +29,10 @@ public class InMemoryFilmStorage implements FilmStorage {
 		return films.values();
 	}
 
-	@Override
 	public Film create(Film film) {
 		return saveFilm(film);
 	}
 
-	@Override
 	public Film update(Film newFilm) {
 		return updateFilm(newFilm);
 	}
@@ -51,7 +50,6 @@ public class InMemoryFilmStorage implements FilmStorage {
 			oldFilm.setName(newFilm.getName());
 			oldFilm.setDuration(newFilm.getDuration());
 			oldFilm.setReleaseDate(newFilm.getReleaseDate());
-
 			return oldFilm;
 		}
 		log.error("Фильм с id = {} не найден", newFilm.getId());
@@ -88,9 +86,6 @@ public class InMemoryFilmStorage implements FilmStorage {
 		throw new ValidationException(message);
 	}
 
-	/**
-	 * Вспомогательный метод для генерации идентификатора нового поста
-	 */
 	private long getNextId() {
 		long currentMaxId = films.keySet()
 				.stream()
@@ -101,10 +96,10 @@ public class InMemoryFilmStorage implements FilmStorage {
 	}
 
 	@Override
-	public Film findFilmById(Long id) {
+	public Optional<Film> findFilmById(Long id) {
 		if (!films.containsKey(id)) {
 			throw new NotFoundException("Фильма с id " + id + " не найдено");
 		}
-		return films.get(id);
+		return Optional.ofNullable(films.get(id));
 	}
 }

@@ -14,10 +14,11 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class InMemoryUserStorage implements UserStorage {
+public abstract class InMemoryUserStorage implements UserStorage {
 	@Getter
 	private final Map<Long, User> users;
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -38,17 +39,27 @@ public class InMemoryUserStorage implements UserStorage {
 	}
 
 	@Override
-	public User findUserById(Long id) {
+	public Optional<User> findByEmail(String email) {
+		for (User user : users.values()) {
+			if (user.getEmail().equalsIgnoreCase(email)) {
+				return Optional.of(user);
+			}
+		}
+		throw new NotFoundException("Пользователь с email " + email + " не найден");
+	}
+
+	@Override
+	public Optional<User> findById(long id) {
 		if (!users.containsKey(id)) {
 			throw new NotFoundException("Пользователя с id " + id + " не найдено");
 		}
-		return users.get(id);
+		return Optional.of(users.get(id));
 	}
 
 	private User updateUser(User newUser) {
 		log.error("проверка выполнения необходимых условий при эндпоинте Put");
 		validateUser(newUser);
-		if (newUser.getId() == null) {
+		if (newUser.getId() == 0) {
 			logAndThrow("Id должен быть указан");
 			throw new ConditionsNotMetException("Id должен быть указан");
 		}
@@ -79,9 +90,6 @@ public class InMemoryUserStorage implements UserStorage {
 		return users.get(user.getId());
 	}
 
-	/**
-	 * Вспомогательный метод для генерации идентификатора нового поста
-	 */
 	private long getNextId() {
 		long currentMaxId = users.keySet()
 				.stream()
@@ -120,5 +128,14 @@ public class InMemoryUserStorage implements UserStorage {
 	@Override
 	public Map<Long, User> getUsers() {
 		return users;
+	}
+
+	@Override
+	public User save(User user) {
+		return null;
+	}
+
+	@Override
+	public void loadFriends(User user) {
 	}
 }
